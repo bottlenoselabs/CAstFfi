@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- MSBuild properties -->
+	<PropertyGroup>
+		<RootNamespace>CAstFfi</RootNamespace>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<!-- NuGet -->
+	<PropertyGroup>
+		<PackAsTool>true</PackAsTool>
+		<IsPackable>true</IsPackable>
+		<PackageOutputPath>$(GitRepositoryPath)/nupkg</PackageOutputPath>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/bottlenoselabs/CAstFfi</RepositoryUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageId>bottlenoselabs.CAstFfi.Tool</PackageId>
+		<PackageDescription>Extract a FFI (foreign function interface) abstract syntax tree (AST) from a cross platform C header for the purposes of generating bindings to other languages.</PackageDescription>
+		<ToolCommandName>castffi</ToolCommandName>
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<ItemGroup>
+		<Content Include="$(GitRepositoryPath)/icon.png">
+			<Pack>true</Pack>
+			<PackagePath>icon.png</PackagePath>
+			<Link>Properties/bottlenoselabs/icon.png</Link>
+		</Content>
+	</ItemGroup>
+
+	<!-- NuGet package references -->
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+		<PackageReference Include="System.IO.Abstractions" Version="19.1.18" />
+	</ItemGroup>
+
+	<!-- Configuration settings -->
+	<ItemGroup>
+		<EmbeddedResource Include="Properties/appsettings.json" />
+	</ItemGroup>
+
+</Project>

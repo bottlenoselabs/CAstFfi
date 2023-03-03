@@ -1,0 +1,26 @@
+# JetBrains
+.idea/
+
+# VisualStudio
+.vs/
+
+# User-specific files
+*.user
+
+# CMake
+cmake-build*/
+
+# C# build artifacts
+bin/
+obj/
+nupkg/
+publish/
+
+# C build artifacts
+lib/
+*.dll
+*.dylib
+*.so
+
+# macOS
+.DS_Store
