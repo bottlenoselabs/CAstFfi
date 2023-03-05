@@ -4,11 +4,10 @@
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CAstFfi.Data.Serialization;
 
 [assembly: InternalsVisibleTo("CAstFfi.Tool")]
 
-namespace CAstFfi.Data;
+namespace CAstFfi.Data.Serialization;
 
 public static class CJsonSerializer
 {

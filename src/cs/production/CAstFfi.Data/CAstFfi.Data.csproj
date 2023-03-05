@@ -15,7 +15,7 @@
 		<RepositoryUrl>https://github.com/bottlenoselabs/CAstFfi</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageId>bottlenoselabs.CAstFfi.Data</PackageId>
-		<PackageDescription>Json data contracts for CAstFfi.</PackageDescription>
+		<PackageDescription>Json data classes for CAstFfi.</PackageDescription>
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>

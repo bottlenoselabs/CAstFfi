@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.IO;
 using CAstFfi.Data;
 using CAstFfi.Data.Native;
+using CAstFfi.Data.Serialization;
 using CAstFfi.Extract;
 using CAstFfi.Tests.Data.Models;
 using CAstFfi.Tests.Foundation;
