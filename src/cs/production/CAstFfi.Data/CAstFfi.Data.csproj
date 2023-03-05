@@ -9,15 +9,13 @@
 
 	<!-- NuGet -->
 	<PropertyGroup>
-		<PackAsTool>true</PackAsTool>
 		<IsPackable>true</IsPackable>
 		<PackageOutputPath>$(GitRepositoryPath)/nupkg</PackageOutputPath>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/bottlenoselabs/CAstFfi</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<PackageId>bottlenoselabs.CAstFfi.Tool</PackageId>
-		<PackageDescription>Extract a FFI (foreign function interface) abstract syntax tree (AST) from a cross platform C header for the purposes of generating bindings to other languages.</PackageDescription>
-		<ToolCommandName>castffi</ToolCommandName>
+		<PackageId>bottlenoselabs.CAstFfi.Data</PackageId>
+		<PackageDescription>Json data contracts for CAstFfi.</PackageDescription>
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
