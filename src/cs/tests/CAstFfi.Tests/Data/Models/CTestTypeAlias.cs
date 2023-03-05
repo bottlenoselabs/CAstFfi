@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
 using System.Text.Json.Serialization;
-using CAstFfi.IO.Output;
+using CAstFfi.Data;
 
 namespace CAstFfi.Tests.Data.Models;
 

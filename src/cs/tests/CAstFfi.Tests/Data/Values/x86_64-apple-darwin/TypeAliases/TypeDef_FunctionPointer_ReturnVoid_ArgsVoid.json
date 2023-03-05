@@ -1,0 +1,5 @@
+{
+  "name": "TypeDef_FunctionPointer_ReturnVoid_ArgsVoid",
+  "underlyingName": "void (void)",
+  "underlyingKind": "functionPointer"
+}

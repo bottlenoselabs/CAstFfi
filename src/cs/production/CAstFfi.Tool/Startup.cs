@@ -6,12 +6,7 @@ using System.CommandLine;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Resources;
-using CAstFfi.Domain.Explore;
-using CAstFfi.Domain.Explore.Handlers;
-using CAstFfi.Domain.Parse;
-using CAstFfi.Infrastructure;
-using CAstFfi.IO.Input;
-using CAstFfi.IO.Output.Serialization;
+using CAstFfi.Extract.Input;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -86,33 +81,7 @@ public static class Startup
         services.AddSingleton<RootCommand, CommandLineInterface>();
         services.AddSingleton<ProgramInputSanitizer>();
 
-        // Data
-        services.AddSingleton<CJsonSerializer>();
-
-        AddDomainServices(services);
-
-        services.AddSingleton<Tool>();
-    }
-
-    private static void AddDomainServices(IServiceCollection services)
-    {
-        services.AddSingleton<ClangInstaller>();
-        services.AddSingleton<ClangArgumentsBuilder>();
-
-        services.AddSingleton<Parser>();
-
-        services.AddSingleton<Explorer>();
-        services.AddSingleton<ArrayExplorer>();
-        services.AddSingleton<EnumConstantExplorer>();
-        services.AddSingleton<EnumExplorer>();
-        services.AddSingleton<FunctionExplorer>();
-        services.AddSingleton<FunctionPointerExplorer>();
-        services.AddSingleton<OpaqueTypeExplorer>();
-        services.AddSingleton<PointerExplorer>();
-        services.AddSingleton<PrimitiveExplorer>();
-        services.AddSingleton<StructExplorer>();
-        services.AddSingleton<UnionExplorer>();
-        services.AddSingleton<TypeAliasExplorer>();
-        services.AddSingleton<VariableExplorer>();
+        Extract.Startup.ConfigureServices(services);
+        Merge.Startup.ConfigureServices(services);
     }
 }

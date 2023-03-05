@@ -3,8 +3,7 @@
 
 using System.IO;
 using System.IO.Abstractions;
-using CAstFfi.Infrastructure;
-using CAstFfi.Native;
+using CAstFfi.Data.Native;
 using Microsoft.Extensions.Logging;
 
 namespace CAstFfi.Tests.Foundation.CMake;

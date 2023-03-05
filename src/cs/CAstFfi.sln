@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAstFfi.Tool", "production\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAstFfi.Tests", "tests\CAstFfi.Tests\CAstFfi.Tests.csproj", "{CA5C80BE-8BB8-47D1-9D43-9B0FCD20F229}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAstFfi.Data", "production\CAstFfi.Data\CAstFfi.Data.csproj", "{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,9 +24,14 @@ Global
 		{CA5C80BE-8BB8-47D1-9D43-9B0FCD20F229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA5C80BE-8BB8-47D1-9D43-9B0FCD20F229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA5C80BE-8BB8-47D1-9D43-9B0FCD20F229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FDECAD82-E9FE-4642-8A41-DEB90D94BE0C} = {CB45BB06-00B0-4B5C-A095-AC6051740A9E}
 		{CA5C80BE-8BB8-47D1-9D43-9B0FCD20F229} = {41B8B428-4658-4D31-9AF6-D6101816C896}
+		{C1A4ADE0-BB1D-4B20-8C14-038BCC90B034} = {CB45BB06-00B0-4B5C-A095-AC6051740A9E}
 	EndGlobalSection
 EndGlobal

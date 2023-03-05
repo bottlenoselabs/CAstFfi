@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using CAstFfi.IO;
+using CAstFfi.Data;
 using CAstFfi.Tests.Data.Models;
 using JetBrains.Annotations;
 using Xunit;

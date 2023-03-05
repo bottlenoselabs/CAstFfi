@@ -4,8 +4,9 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
-using CAstFfi.IO.Output;
-using CAstFfi.IO.Output.Serialization;
+using CAstFfi.Data;
+using CAstFfi.Data.Native;
+using CAstFfi.Extract;
 using CAstFfi.Tests.Data.Models;
 using CAstFfi.Tests.Foundation;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +16,7 @@ namespace CAstFfi.Tests;
 
 public sealed class TestFixtureCCode : IDisposable
 {
-    private readonly CJsonSerializer _jsonSerializer;
-    private readonly Tool _tool;
+    private readonly ExtractAbstractSyntaxTreeTool _tool;
 
     public ImmutableArray<TestCCodeAbstractSyntaxTree> AbstractSyntaxTrees { get; }
 
@@ -24,8 +24,7 @@ public sealed class TestFixtureCCode : IDisposable
     {
         var services = TestHost.Services;
 
-        _jsonSerializer = services.GetService<CJsonSerializer>()!;
-        _tool = services.GetService<Tool>()!;
+        _tool = services.GetService<ExtractAbstractSyntaxTreeTool>()!;
         AbstractSyntaxTrees = GetAbstractSyntaxTrees();
     }
 
@@ -39,13 +38,17 @@ public sealed class TestFixtureCCode : IDisposable
 
     private ImmutableArray<TestCCodeAbstractSyntaxTree> GetAbstractSyntaxTrees()
     {
-        var configurationFilePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-        _tool.Run(configurationFilePath);
+        var configurationFileName = string.Empty;
+        configurationFileName = NativeUtility.HostOperatingSystem switch
+        {
+            NativeOperatingSystem.Windows => "config_windows.json",
+            NativeOperatingSystem.macOS => "config_macos.json",
+            NativeOperatingSystem.Linux => "config_linux.json",
+            _ => configurationFileName
+        };
 
-        // if (!output.IsSuccess)
-        // {
-        //     return ImmutableArray<TestCCodeAbstractSyntaxTree>.Empty;
-        // }
+        var configurationFilePath = Path.Combine(AppContext.BaseDirectory, configurationFileName);
+        _tool.Run(configurationFilePath);
 
         var abstractSyntaxTreesDirectory = Path.Combine(AppContext.BaseDirectory, "ast");
         var abstractSyntaxTreeFilePaths = Directory.EnumerateFiles(abstractSyntaxTreesDirectory);
@@ -66,7 +69,7 @@ public sealed class TestFixtureCCode : IDisposable
 
     private TestCCodeAbstractSyntaxTree GetAbstractSyntaxTree(string filePath)
     {
-        var ast = _jsonSerializer.Read(filePath);
+        var ast = CJsonSerializer.ReadAbstractSyntaxTreeTargetPlatform(filePath);
         var functions = CreateTestFunctions(ast);
         var enums = CreateTestEnums(ast);
         var structs = CreateTestRecords(ast);
@@ -86,7 +89,7 @@ public sealed class TestFixtureCCode : IDisposable
         return data;
     }
 
-    private static ImmutableDictionary<string, CTestFunction> CreateTestFunctions(CAbstractSyntaxTree ast)
+    private static ImmutableDictionary<string, CTestFunction> CreateTestFunctions(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestFunction>();
 
@@ -140,7 +143,7 @@ public sealed class TestFixtureCCode : IDisposable
         return result;
     }
 
-    private static ImmutableDictionary<string, CTestEnum> CreateTestEnums(CAbstractSyntaxTree ast)
+    private static ImmutableDictionary<string, CTestEnum> CreateTestEnums(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestEnum>();
 
@@ -189,7 +192,7 @@ public sealed class TestFixtureCCode : IDisposable
         return result;
     }
 
-    private static ImmutableDictionary<string, CTestRecord> CreateTestRecords(CAbstractSyntaxTree ast)
+    private static ImmutableDictionary<string, CTestRecord> CreateTestRecords(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestRecord>();
 
@@ -245,7 +248,7 @@ public sealed class TestFixtureCCode : IDisposable
         return result;
     }
 
-    private ImmutableDictionary<string, CTestMacroObject> CreateTestMacroObjects(CAbstractSyntaxTree ast)
+    private ImmutableDictionary<string, CTestMacroObject> CreateTestMacroObjects(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestMacroObject>();
 
@@ -270,7 +273,7 @@ public sealed class TestFixtureCCode : IDisposable
         return result;
     }
 
-    private ImmutableDictionary<string, CTestTypeAlias> CreateTestTypeAliases(CAbstractSyntaxTree ast)
+    private ImmutableDictionary<string, CTestTypeAlias> CreateTestTypeAliases(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestTypeAlias>();
 
@@ -295,7 +298,7 @@ public sealed class TestFixtureCCode : IDisposable
         return result;
     }
 
-    private ImmutableDictionary<string, CTestFunctionPointer> CreateTestFunctionPointers(CAbstractSyntaxTree ast)
+    private ImmutableDictionary<string, CTestFunctionPointer> CreateTestFunctionPointers(CAbstractSyntaxTreeTargetPlatform ast)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, CTestFunctionPointer>();
 

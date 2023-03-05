@@ -47,5 +47,8 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Properties/appsettings.json" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\CAstFfi.Data\CAstFfi.Data.csproj" />
+	</ItemGroup>
 
 </Project>
