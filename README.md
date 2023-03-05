@@ -122,7 +122,7 @@ Note that the internals of the C library is irrelevant and to which this list do
 
 <sup>1</sup>: **Not yet implemented**.
 
-<sup>2</sup>: Do not assume the value of an enum is always an unsigned or signed integer in C. However, enums are forced to be signed type for the purposes of the FFI.
+<sup>2</sup>: Do not use 64-bit enums due to compiler determinism in C. Enums must be 32-bit in size or less in C. Do not assume the value of an enum is always an unsigned or signed integer in C. However for the purposes of the FFI, enums are forced to be signed type.
 
 <sup>3</sup>: Do use standard integer types from `stdint.h` such as `int32_t`, `uint64_t`, etc which are portable. Do not use C's primitive integer types directly such as `unsigned long` as they are not garanteed to portable due to possibly having different bitwidths for different compilers or platforms.
 

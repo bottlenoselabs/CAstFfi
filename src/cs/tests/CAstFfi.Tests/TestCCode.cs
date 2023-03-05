@@ -17,12 +17,10 @@ public class TestCCode : TestBase
         "Enum_Force_SInt8",
         "Enum_Force_SInt16",
         "Enum_Force_SInt32",
-        "Enum_Force_SInt64",
 
         "Enum_Force_UInt8",
         "Enum_Force_UInt16",
-        "Enum_Force_UInt32",
-        "Enum_Force_UInt64"
+        "Enum_Force_UInt32"
     };
 
     public static TheoryData<string> NamedFunctionPointers() => new()
