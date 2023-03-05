@@ -1,6 +1,6 @@
 {
   "name": "Enum_Force_UInt64",
-  "type_integer": "unsigned long long",
+  "type_integer": "unsigned long",
   "values": [
     {
       "name": "ENUM_FORCE_UINT64_DAY_UNKNOWN",
