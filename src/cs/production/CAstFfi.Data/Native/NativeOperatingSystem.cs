@@ -2,14 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
 
 namespace CAstFfi.Data.Native;
 
 /// <summary>
 ///     Defines the native operating systems.
 /// </summary>
-[PublicAPI]
 public enum NativeOperatingSystem
 {
     /// <summary>

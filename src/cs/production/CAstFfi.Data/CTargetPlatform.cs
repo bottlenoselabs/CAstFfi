@@ -4,7 +4,6 @@
 using System.Text.Json.Serialization;
 using CAstFfi.Data.Native;
 using CAstFfi.Data.Serialization;
-using JetBrains.Annotations;
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
@@ -20,7 +19,6 @@ namespace CAstFfi.Data;
 /// <summary>
 ///     Defines a native target platform.
 /// </summary>
-[PublicAPI]
 [JsonConverter(typeof(CTargetPlatformJsonConverter))]
 public record struct CTargetPlatform(string TargetName)
 {

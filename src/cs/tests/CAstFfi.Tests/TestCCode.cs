@@ -67,7 +67,7 @@ public class TestCCode : TestBase
     private readonly TestFixtureCCode _fixture;
 
     public TestCCode()
-        : base("Data/Values", false)
+        : base("Data/Values", true)
     {
         var services = TestHost.Services;
         _fixture = services.GetService<TestFixtureCCode>()!;
