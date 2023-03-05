@@ -180,3 +180,71 @@ The following table demonstrates commonly used target platforms.
 <sup>3</sup>: Google does not allow copy or usage of their software development kits (SDKs) due to their [Android Software Development Kit License Agreement](https://developer.android.com/studio/terms). You can download and install Android Studio to gain access to the SDKs for Android. This effectively means that to generate FFI ASTs for target platforms which are Android, then `CAstFfi` must run from Windows, macOS, or Linux with Android Studio installed and additional SDKs for each target platform are also installed through Android Studio or equivalent.
 
 Note that pointers such as `void*` can have different sizes across target computer architectures. E.g., `X86` pointers are 4 bytes and `X64` (aswell as `ARM64`) pointers are 8 bytes. This means that ASTs that `CAstFfi` generates between 32-bit and 64-bit target platforms will have different return type sizes, parameter type sizes, or record sizes when using pointers. That being said, 64-bit word size is pretty ubiquitous on Windows these days, at least for gaming, as you can see from [Steam hardware survey where 64-bit is 99%+](https://store.steampowered.com/hwsurvey/directx/). Additionally, you can see that the ["trend" is that 64-bit is becoming standard over time with 32-bit getting dropped](https://en.wikipedia.org/wiki/64-bit_computing#64-bit_operating_system_timeline). If you are planning on targeting modern machines, I would advise making your life simple and just forgeting about target platforms with 32-bit computer architectures such as `X86` and `ARM32`.
+
+## Getting Started
+
+### Install
+
+```bash
+dotnet tool install bottlenoselabs.castffi.tool -g
+```
+
+### Usage
+
+#### Windows
+
+`config_windows.json`:
+```json
+{
+  "inputFilePath": "path/to/libary/include/header.h",
+  "userIncludeDirectories": [
+    "path/to/other_library/include"
+    ],
+  "platforms": {
+    "aarch64-apple-darwin": {},
+    "x86_64-apple-darwin": {}
+  }
+}
+```
+
+Terminal:
+```bash
+castffi extract path/to/config_macos.json
+```
+
+#### macOS
+
+`config_macos.json`:
+```json
+{
+  "inputFilePath": "path/to/libary/include/header.h",
+  "userIncludeDirectories": [
+    "path/to/other_library/include"
+    ],
+  "platforms": {
+    "aarch64-apple-darwin": {},
+    "x86_64-apple-darwin": {}
+  }
+}
+```
+
+#### Linux
+
+`config_linux.json`:
+```json
+{
+  "inputFilePath": "../src/c/production/flecs/include/flecs_pinvoke.h",
+  "userIncludeDirectories": [
+    "../ext/flecs/include"
+    ],
+  "platforms": {
+    "aarch64-unknown-linux-gnu": {}
+    "x86_64-unknown-linux-gnu": {},
+  }
+}
+```
+
+Terminal:
+```bash
+castffi extract path/to/config_macos.json
+```

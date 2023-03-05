@@ -11,7 +11,7 @@ public sealed class ExtractAbstractSyntaxTreeCommand : Command
 
     public ExtractAbstractSyntaxTreeCommand(ExtractAbstractSyntaxTreeTool tool)
         : base(
-            "ast",
+            "extract",
             "Extract the FFI (foreign function interface) of a C `.h` file to one or more abstract syntax tree (AST) `.json` files per target platform.")
     {
         _tool = tool;
