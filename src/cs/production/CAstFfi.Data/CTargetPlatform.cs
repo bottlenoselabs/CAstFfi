@@ -239,11 +239,6 @@ public record struct CTargetPlatform(string TargetName)
     /// </summary>
     public static readonly CTargetPlatform aarch64_apple_ios_sim = new("aarch64-apple-ios-sim");
 
-    /// <summary>
-    ///     X64 iOS (64-bit).
-    /// </summary>
-    public static readonly CTargetPlatform x86_64_apple_ios = new("x86_64-apple-ios");
-
     #endregion
 
     #region Android
