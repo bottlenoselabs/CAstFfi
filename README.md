@@ -201,15 +201,15 @@ dotnet tool install bottlenoselabs.castffi.tool -g
     "path/to/other_library/include"
     ],
   "platforms": {
-    "aarch64-apple-darwin": {},
-    "x86_64-apple-darwin": {}
+    "x86_64-pc-windows-msvc": {},
+    "aarch64-pc-windows-msvc": {}
   }
 }
 ```
 
 Terminal:
 ```bash
-castffi extract path/to/config_macos.json
+castffi extract path/to/config_windows.json
 ```
 
 #### macOS
@@ -228,14 +228,19 @@ castffi extract path/to/config_macos.json
 }
 ```
 
+Terminal:
+```bash
+castffi extract path/to/config_macos.json
+```
+
 #### Linux
 
 `config_linux.json`:
 ```json
 {
-  "inputFilePath": "../src/c/production/flecs/include/flecs_pinvoke.h",
+  "inputFilePath": "path/to/libary/include/header.h",
   "userIncludeDirectories": [
-    "../ext/flecs/include"
+    "path/to/other_library/include"
     ],
   "platforms": {
     "aarch64-unknown-linux-gnu": {}
@@ -246,5 +251,5 @@ castffi extract path/to/config_macos.json
 
 Terminal:
 ```bash
-castffi extract path/to/config_macos.json
+castffi extract path/to/config_linux.json
 ```
