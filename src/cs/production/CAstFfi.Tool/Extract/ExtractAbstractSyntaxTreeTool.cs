@@ -1,6 +1,7 @@
 // Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
+using System.Collections.Immutable;
 using CAstFfi.Data;
 using CAstFfi.Data.Serialization;
 using CAstFfi.Extract.Explore;
@@ -55,17 +56,23 @@ public sealed partial class ExtractAbstractSyntaxTreeTool
             catch (Exception e)
 #pragma warning restore CA1031
             {
-                Failure(e, abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
+                LocalFailure(e, abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
                 return;
             }
 
-            Success(abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
+            LocalSuccess(abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
         }
+
+        var targetPlatforms = programOptions.AbstractSyntaxTreeOptions.Select(x => x.TargetPlatform).ToImmutableArray();
+        TotalSuccess(targetPlatforms);
     }
 
     [LoggerMessage(0, LogLevel.Information, "Success. Extracted abstract syntax tree for the target platform '{TargetPlatform}': {FilePath}")]
-    private partial void Success(CTargetPlatform targetPlatform, string filePath);
+    private partial void LocalSuccess(CTargetPlatform targetPlatform, string filePath);
 
     [LoggerMessage(1, LogLevel.Error, "Failed to extract abstract syntax tree for the target platform '{TargetPlatform}': {FilePath}")]
-    private partial void Failure(Exception exception, CTargetPlatform targetPlatform, string filePath);
+    private partial void LocalFailure(Exception exception, CTargetPlatform targetPlatform, string filePath);
+
+    [LoggerMessage(2, LogLevel.Information, "Success. Extracted abstract syntax trees for the target platforms '{TargetPlatforms}'.")]
+    private partial void TotalSuccess(ImmutableArray<CTargetPlatform> targetPlatforms);
 }
