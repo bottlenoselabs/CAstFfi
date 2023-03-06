@@ -29,6 +29,8 @@ public sealed class StructExplorer : RecordExplorer
     private CRecord Struct(ExploreContext context, ExploreInfoNode info)
     {
         var fields = StructFields(context, info);
+        var comment = context.Comment(info.Cursor);
+
         var record = new CRecord
         {
             RecordKind = CRecordKind.Struct,
@@ -36,8 +38,10 @@ public sealed class StructExplorer : RecordExplorer
             Name = info.Name,
             Fields = fields,
             SizeOf = info.SizeOf,
-            AlignOf = info.AlignOf!.Value
+            AlignOf = info.AlignOf!.Value,
+            Comment = comment
         };
+
         return record;
     }
 
@@ -73,13 +77,15 @@ public sealed class StructExplorer : RecordExplorer
         var location = context.Location(fieldCursor, type);
         var typeInfo = context.VisitType(type, structInfo, fieldIndex)!;
         var offsetOf = (int)clang_Cursor_getOffsetOfField(fieldCursor) / 8;
+        var comment = context.Comment(fieldCursor);
 
         return new CRecordField
         {
             Name = fieldName,
             Location = location,
             TypeInfo = typeInfo,
-            OffsetOf = offsetOf
+            OffsetOf = offsetOf,
+            Comment = comment
         };
     }
 }

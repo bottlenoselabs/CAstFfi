@@ -114,7 +114,8 @@ public sealed class TestFixtureCCode : IDisposable
             CallingConvention = value.CallingConvention.ToString().ToLowerInvariant(),
 #pragma warning restore CA1308
             ReturnTypeName = value.ReturnTypeInfo.Name,
-            Parameters = parameters
+            Parameters = parameters,
+            Comment = value.Comment
         };
         return result;
     }

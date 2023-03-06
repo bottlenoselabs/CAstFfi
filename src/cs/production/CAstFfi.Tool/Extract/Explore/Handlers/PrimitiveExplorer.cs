@@ -51,11 +51,13 @@ public sealed class PrimitiveExplorer : ExploreNodeHandler<CPrimitive>
     private static CPrimitive Primitive(ExploreContext context, ExploreInfoNode info)
     {
         var typeInfo = context.VisitType(info.Type, info)!;
+        var comment = context.Comment(info.Cursor);
 
         var result = new CPrimitive
         {
             Name = info.Name,
-            TypeInfo = typeInfo
+            TypeInfo = typeInfo,
+            Comment = comment
         };
         return result;
     }

@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using CAstFfi.Data;
+using CAstFfi.Extract.Clang;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using static bottlenoselabs.clang;
@@ -49,14 +50,18 @@ public sealed class FunctionExplorer : ExploreNodeHandler<CFunction>
             return null;
         }
 
+        var comment = context.Comment(info.Cursor);
+
         var result = new CFunction
         {
             Name = info.Name,
             Location = info.Location,
             CallingConvention = callingConvention,
             ReturnTypeInfo = returnTypeInfo,
-            Parameters = parameters.Value
+            Parameters = parameters.Value,
+            Comment = comment
         };
+
         return result;
     }
 
@@ -74,7 +79,7 @@ public sealed class FunctionExplorer : ExploreNodeHandler<CFunction>
         return result;
     }
 
-    private static CTypeInfo? FunctionReturnType(
+    private static CTypeInfo FunctionReturnType(
         ExploreContext context, ExploreInfoNode info)
     {
         var resultType = clang_getCursorResultType(info.Cursor);
@@ -118,11 +123,14 @@ public sealed class FunctionExplorer : ExploreNodeHandler<CFunction>
             return null;
         }
 
+        var comment = context.Comment(parameterCursor);
+
         var functionExternParameter = new CFunctionParameter
         {
             Name = name,
             Location = parameterTypeInfo.Location,
-            TypeInfo = parameterTypeInfo
+            TypeInfo = parameterTypeInfo,
+            Comment = comment
         };
         return functionExternParameter;
     }

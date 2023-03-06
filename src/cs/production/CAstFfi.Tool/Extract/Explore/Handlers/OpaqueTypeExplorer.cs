@@ -21,17 +21,20 @@ public sealed class OpaqueTypeExplorer : ExploreNodeHandler<COpaqueType>
 
     protected override COpaqueType Explore(ExploreContext context, ExploreInfoNode info)
     {
-        var opaqueDataType = OpaqueDataType(info);
+        var opaqueDataType = OpaqueDataType(context, info);
         return opaqueDataType;
     }
 
-    private static COpaqueType OpaqueDataType(ExploreInfoNode info)
+    private static COpaqueType OpaqueDataType(ExploreContext context, ExploreInfoNode info)
     {
+        var comment = context.Comment(info.Cursor);
+
         var result = new COpaqueType
         {
             Name = info.Name,
             Location = info.Location,
-            SizeOf = info.SizeOf
+            SizeOf = info.SizeOf,
+            Comment = comment
         };
 
         return result;

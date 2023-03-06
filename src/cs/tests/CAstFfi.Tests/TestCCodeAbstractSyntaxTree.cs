@@ -244,6 +244,7 @@ public sealed class TestCCodeAbstractSyntaxTree
         var function = GetFunction("ffi_get_platform_name");
         Assert.Equal("cdecl", function.CallingConvention);
         Assert.Equal("const char*", function.ReturnTypeName);
+        Assert.Equal("// Returns the current platform name.", function.Comment);
         Assert.True(function.Parameters.IsDefaultOrEmpty);
     }
 }

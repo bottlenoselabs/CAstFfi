@@ -45,6 +45,7 @@ public sealed class FunctionPointerExplorer : ExploreNodeHandler<CFunctionPointe
         var typeInfo = context.VisitType(info.Type, info, kindHint: CKind.FunctionPointer)!;
         var returnTypeInfo = FunctionPointerReturnType(context, info);
         var parameters = FunctionPointerParameters(context, info);
+        var comment = context.Comment(info.Cursor);
 
         var result = new CFunctionPointer
         {
@@ -52,8 +53,10 @@ public sealed class FunctionPointerExplorer : ExploreNodeHandler<CFunctionPointe
             Location = info.Location,
             TypeInfo = typeInfo,
             ReturnTypeInfo = returnTypeInfo,
-            Parameters = parameters
+            Parameters = parameters,
+            Comment = comment
         };
+
         return result;
     }
 
@@ -88,6 +91,7 @@ public sealed class FunctionPointerExplorer : ExploreNodeHandler<CFunctionPointe
         ExploreInfoNode parentInfo)
     {
         var parameterTypeInfo = context.VisitType(parameterType, parentInfo)!;
+
         var result = new CFunctionPointerParameter
         {
             Name = string.Empty,

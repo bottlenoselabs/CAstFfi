@@ -108,6 +108,7 @@
     #define FFI_API_DECL extern
 #endif
 
+// Returns the current platform name.
 FFI_API_DECL const char* ffi_get_platform_name()
 {
     return FFI_PLATFORM_NAME;

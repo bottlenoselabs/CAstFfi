@@ -23,17 +23,20 @@ public sealed class VariableExplorer : ExploreNodeHandler<CVariable>
 
     protected override CVariable Explore(ExploreContext context, ExploreInfoNode info)
     {
-        var variable = Variable(info);
+        var variable = Variable(context, info);
         return variable;
     }
 
-    private static CVariable Variable(ExploreInfoNode info)
+    private static CVariable Variable(ExploreContext context, ExploreInfoNode info)
     {
+        var comment = context.Comment(info.Cursor);
+
         var result = new CVariable
         {
             Location = info.Location,
             Name = info.Name,
-            Type = info.TypeName
+            Type = info.TypeName,
+            Comment = comment
         };
         return result;
     }

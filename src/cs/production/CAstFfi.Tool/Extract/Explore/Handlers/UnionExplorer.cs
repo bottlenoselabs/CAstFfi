@@ -29,6 +29,7 @@ public sealed class UnionExplorer : RecordExplorer
     private CRecord Union(ExploreContext context, ExploreInfoNode info)
     {
         var fields = UnionFields(context, info.Type, info);
+        var comment = context.Comment(info.Cursor);
 
         var result = new CRecord
         {
@@ -37,8 +38,10 @@ public sealed class UnionExplorer : RecordExplorer
             Name = info.TypeName,
             Fields = fields,
             SizeOf = info.SizeOf,
-            AlignOf = info.AlignOf!.Value
+            AlignOf = info.AlignOf!.Value,
+            Comment = comment
         };
+
         return result;
     }
 
@@ -71,12 +74,14 @@ public sealed class UnionExplorer : RecordExplorer
         var type = clang_getCursorType(cursor);
         var location = context.Location(cursor, type);
         var typeInfo = context.VisitType(type, parentInfo, fieldIndex)!;
+        var comment = context.Comment(cursor);
 
         var result = new CRecordField
         {
             Name = name,
             Location = location,
-            TypeInfo = typeInfo
+            TypeInfo = typeInfo,
+            Comment = comment
         };
 
         return result;

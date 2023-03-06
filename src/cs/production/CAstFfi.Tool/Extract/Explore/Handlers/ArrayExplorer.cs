@@ -35,6 +35,7 @@ public sealed class ArrayExplorer : ExploreNodeHandler<CArray>
             Name = info.Name,
             TypeInfo = typeInfo
         };
+
         return result;
     }
 }

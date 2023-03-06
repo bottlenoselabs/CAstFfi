@@ -33,14 +33,17 @@ public sealed class EnumExplorer : ExploreNodeHandler<CEnum>
     {
         var integerTypeInfo = IntegerTypeInfo(context, info);
         var enumValues = CreateEnumValues(info.Cursor);
+        var comment = context.Comment(info.Cursor);
 
         var result = new CEnum
         {
             Name = info.Name,
             Location = info.Location,
             IntegerTypeInfo = integerTypeInfo,
-            Values = enumValues
+            Values = enumValues,
+            Comment = comment
         };
+
         return result;
     }
 

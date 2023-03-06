@@ -30,12 +30,15 @@ public sealed class PointerExplorer : ExploreNodeHandler<CPointer>
     {
         var type = clang_getPointeeType(info.Type);
         var typeInfo = context.VisitType(type, info)!;
+        var comment = context.Comment(info.Cursor);
 
         var result = new CPointer
         {
             Name = info.Name,
-            TypeInfo = typeInfo
+            TypeInfo = typeInfo,
+            Comment = comment
         };
+
         return result;
     }
 }

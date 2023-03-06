@@ -76,6 +76,13 @@ public sealed class ExploreContext
         return typeInfo;
     }
 
+    public string Comment(CXCursor cursor)
+    {
+        var commentStringC = clang_Cursor_getRawCommentText(cursor);
+        var commentString = commentStringC.String();
+        return commentString;
+    }
+
     public CLocation Location(
         CXCursor cursor,
         CXType type)

@@ -8,6 +8,9 @@ namespace CAstFfi.Data;
 // NOTE: Properties are required for System.Text.Json serialization
 public abstract record CNode : IComparable<CNode>
 {
+    [JsonPropertyName("comment")]
+    public string Comment { get; set; } = string.Empty;
+
     [JsonIgnore]
     public string Name { get; set; } = string.Empty;
 

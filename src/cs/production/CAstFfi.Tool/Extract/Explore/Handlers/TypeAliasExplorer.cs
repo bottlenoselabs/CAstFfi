@@ -31,12 +31,14 @@ public class TypeAliasExplorer : ExploreNodeHandler<CTypeAlias>
     {
         var aliasType = clang_getTypedefDeclUnderlyingType(info.Cursor);
         var aliasTypeInfo = context.VisitType(aliasType, info)!;
+        var comment = context.Comment(info.Cursor);
 
         var typedef = new CTypeAlias
         {
             Name = info.Name,
             Location = info.Location,
-            UnderlyingTypeInfo = aliasTypeInfo
+            UnderlyingTypeInfo = aliasTypeInfo,
+            Comment = comment
         };
         return typedef;
     }

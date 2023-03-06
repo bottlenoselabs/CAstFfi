@@ -610,6 +610,8 @@ int main(void)
         // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
         uint options = 0x0 |
                        0x1 | // CXTranslationUnit_DetailedPreprocessingRecord
+                       0x40 | // CXTranslationUnit_SkipFunctionBodies
+                       0x80 | // IncludeBriefCommentsInCodeCompletion
                        0x1000 | // CXTranslationUnit_IncludeAttributedTypes
                        0x2000 | // CXTranslationUnit_VisitImplicitAttributes
                        0x4000 | // CXTranslationUnit_IgnoreNonErrorsFromIncludedFiles

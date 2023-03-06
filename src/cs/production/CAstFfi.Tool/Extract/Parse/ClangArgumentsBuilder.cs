@@ -109,6 +109,7 @@ public sealed partial class ClangArgumentsBuilder
 
             args.Add("-fblocks");
             args.Add("-Wno-pragma-once-outside-header");
+            args.Add("-fparse-all-comments");
         }
 
         if (ignoreWarnings)
