@@ -6,4 +6,6 @@ namespace CAstFfi.Extract.Input.Sanitized;
 public sealed class ExploreOptions
 {
     public bool IsEnabledSystemDeclarations { get; init; }
+
+    public bool IsEnabledOnlyExternalTopLevelCursors { get; init; }
 }

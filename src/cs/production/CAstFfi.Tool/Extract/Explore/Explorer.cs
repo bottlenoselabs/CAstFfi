@@ -388,8 +388,18 @@ public sealed partial class Explorer
 
         var isEnabledSingleHeader = context.ParseOptions.IsEnabledSingleHeader;
         var translationUnitCursor = clang_getTranslationUnitCursor(translationUnit);
-        var cursors = translationUnitCursor.GetDescendents(
-            (child, _) => IsTopLevelCursorOfInterest(child), !isEnabledSingleHeader);
+
+        ImmutableArray<CXCursor> cursors;
+
+        if (context.ExploreOptions.IsEnabledOnlyExternalTopLevelCursors)
+        {
+            cursors = translationUnitCursor.GetDescendents(
+                (child, _) => IsExternalTopLevelCursor(child), !isEnabledSingleHeader);
+        }
+        else
+        {
+            cursors = translationUnitCursor.GetDescendents();
+        }
 
         foreach (var cursor in cursors)
         {
@@ -456,13 +466,14 @@ public sealed partial class Explorer
         VisitTranslationUnit(context, includeTranslationUnit, headerFilePath);
     }
 
-    private static bool IsTopLevelCursorOfInterest(CXCursor cursor)
+    private static bool IsExternalTopLevelCursor(CXCursor cursor)
     {
         var kind = clang_getCursorKind(cursor);
         if (kind != CXCursorKind.CXCursor_FunctionDecl &&
             kind != CXCursorKind.CXCursor_VarDecl &&
             kind != CXCursorKind.CXCursor_EnumDecl &&
-            kind != CXCursorKind.CXCursor_TypedefDecl)
+            kind != CXCursorKind.CXCursor_TypedefDecl &&
+            kind != CXCursorKind.CXCursor_StructDecl)
         {
             return false;
         }
@@ -470,12 +481,6 @@ public sealed partial class Explorer
         if (kind == CXCursorKind.CXCursor_EnumDecl)
         {
             return true;
-        }
-
-        var name2 = cursor.Name();
-        if (name2 == "struct_bitfield_one_fields")
-        {
-            Console.WriteLine();
         }
 
         var linkage = clang_getCursorLinkage(cursor);
@@ -493,6 +498,7 @@ public sealed partial class Explorer
             CXCursorKind.CXCursor_VarDecl => CKind.Variable,
             CXCursorKind.CXCursor_EnumDecl => CKind.Enum,
             CXCursorKind.CXCursor_TypedefDecl => CKind.TypeAlias,
+            CXCursorKind.CXCursor_StructDecl => CKind.Struct,
             _ => CKind.Unknown
         };
 

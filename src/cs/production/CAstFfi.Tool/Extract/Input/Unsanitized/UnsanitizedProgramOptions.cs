@@ -106,6 +106,16 @@ public sealed class UnsanitizedProgramOptions
     public bool? IsEnabledParseAsSingleHeader { get; set; }
 
     /// <summary>
+    ///     Determines whether to parse only the top-level cursors which are externally visible, or all top-level cursors.
+    /// </summary>
+    /// <para>
+    ///     Default is <c>true</c>. Use <c>true</c> to parse only top-level cursors which are externally visible. Use
+    ///     <c>false</c> to parse all top-level cursors whether or not they are externally visible.
+    /// </para>
+    [JsonPropertyName("isEnabledOnlyExternalTopLevelCursors")]
+    public bool? IsEnabledOnlyExternalTopLevelCursors { get; set; }
+
+    /// <summary>
     ///     The target platform configurations for extracting the abstract syntax trees.
     /// </summary>
     [JsonPropertyName("platforms")]

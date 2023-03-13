@@ -116,7 +116,8 @@ public sealed class ProgramInputSanitizer
             OutputFilePath = outputFilePath,
             ExplorerOptions = new ExploreOptions
             {
-                IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false
+                IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
+                IsEnabledOnlyExternalTopLevelCursors = options.IsEnabledOnlyExternalTopLevelCursors ?? true,
             },
             ParseOptions = new ParseOptions
             {
