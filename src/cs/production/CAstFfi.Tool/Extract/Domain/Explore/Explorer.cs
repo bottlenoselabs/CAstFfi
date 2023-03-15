@@ -493,6 +493,12 @@ public sealed partial class Explorer
 
     private void VisitTopLevelCursor(ExploreContext context, CXCursor cursor)
     {
+        if (cursor.kind == CXCursorKind.CXCursor_MacroDefinition)
+        {
+            // Macro definitions are handled in the parser domain logic.
+            return;
+        }
+
         var kind = cursor.kind switch
         {
             CXCursorKind.CXCursor_FunctionDecl => CKind.Function,
@@ -583,7 +589,7 @@ public sealed partial class Explorer
         frontier.PushBack(info);
     }
 
-    [LoggerMessage(0, LogLevel.Error, "- Expected a top level translation unit declaration (function, variable, enum, or macro) but found '{Kind}'")]
+    [LoggerMessage(0, LogLevel.Error, "- Expected a top level translation unit declaration (function, variable, enum, typedef, struct, or macro) but found '{Kind}'")]
     private partial void LogUnexpectedTopLevelCursor(CXCursorKind kind);
 
     [LoggerMessage(1, LogLevel.Error, "- Failure")]
