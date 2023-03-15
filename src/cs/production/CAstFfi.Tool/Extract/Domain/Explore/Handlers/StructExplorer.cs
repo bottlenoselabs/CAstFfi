@@ -31,18 +31,26 @@ public sealed class StructExplorer : RecordExplorer
         var fields = StructFields(context, info);
         var comment = context.Comment(info.Cursor);
 
-        var record = new CRecord
+        try
         {
-            RecordKind = CRecordKind.Struct,
-            Location = info.Location,
-            Name = info.Name,
-            Fields = fields,
-            SizeOf = info.SizeOf,
-            AlignOf = info.AlignOf!.Value,
-            Comment = comment
-        };
+            var record = new CRecord
+            {
+                RecordKind = CRecordKind.Struct,
+                Location = info.Location,
+                Name = info.Name,
+                Fields = fields,
+                SizeOf = info.SizeOf,
+                AlignOf = info.AlignOf!.Value,
+                Comment = comment
+            };
 
-        return record;
+            return record;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private ImmutableArray<CRecordField> StructFields(

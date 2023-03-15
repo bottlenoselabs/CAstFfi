@@ -44,7 +44,11 @@ public sealed class ProgramInputSanitizer
             throw new ProgramInputSanitizationException("The program options file is null.");
         }
 
+        var previousCurrentDirectory = Environment.CurrentDirectory;
+        Environment.CurrentDirectory = Path.GetDirectoryName(filePath)!;
         var result = Sanitize(unsanitizedProgramOptions);
+        Environment.CurrentDirectory = previousCurrentDirectory;
+
         return result;
     }
 

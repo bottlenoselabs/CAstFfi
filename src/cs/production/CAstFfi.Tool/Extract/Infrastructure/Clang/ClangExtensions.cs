@@ -110,9 +110,9 @@ public static unsafe class ClangExtensions
     public static string String(this CXString cxString)
     {
         var cString = clang_getCString(cxString);
-        var result = Marshal.PtrToStringAnsi(cString)!;
+        var result = Marshal.PtrToStringAnsi(cString);
         clang_disposeString(cxString);
-        return result;
+        return string.IsNullOrEmpty(result) ? string.Empty : result;
     }
 
     public static string Name(this CXCursor clangCursor)

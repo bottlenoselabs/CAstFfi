@@ -549,6 +549,16 @@ public sealed partial class Explorer
         {
             context.VisitType(type, null);
         }
+        else if (kind == CKind.Struct)
+        {
+            if (info.SizeOf == -2)
+            {
+                // Incomplete top-level struct; likely used with a pointer to make an opaque type.
+                return;
+            }
+
+            TryEnqueueVisitInfoNode(context, kind, info);
+        }
         else
         {
             TryEnqueueVisitInfoNode(context, kind, info);
