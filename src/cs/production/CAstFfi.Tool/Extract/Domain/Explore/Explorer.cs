@@ -493,9 +493,11 @@ public sealed partial class Explorer
 
     private void VisitTopLevelCursor(ExploreContext context, CXCursor cursor)
     {
-        if (cursor.kind == CXCursorKind.CXCursor_MacroDefinition)
+        if (cursor.kind is CXCursorKind.CXCursor_MacroDefinition
+            or CXCursorKind.CXCursor_MacroExpansion
+            or CXCursorKind.CXCursor_MacroInstantiation)
         {
-            // Macro definitions are handled in the parser domain logic.
+            // Macro are handled in the parser domain logic because Clang does not provide us with a good enough API to deal with them
             return;
         }
 
