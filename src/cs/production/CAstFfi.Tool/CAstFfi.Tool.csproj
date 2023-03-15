@@ -52,7 +52,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Extract\Domain" />
-	  <Folder Include="Extract\Infrastructure" />
 	</ItemGroup>
 
 </Project>

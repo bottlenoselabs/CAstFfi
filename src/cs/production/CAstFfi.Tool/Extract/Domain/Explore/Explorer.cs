@@ -6,6 +6,7 @@ using System.Text;
 using CAstFfi.Data;
 using CAstFfi.Extract.Domain.Explore.Handlers;
 using CAstFfi.Extract.Domain.Parse;
+using CAstFfi.Extract.Infrastructure;
 using CAstFfi.Extract.Infrastructure.Clang;
 using CAstFfi.Extract.Input.Sanitized;
 using Microsoft.Extensions.DependencyInjection;

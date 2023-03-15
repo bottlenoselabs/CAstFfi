@@ -5,7 +5,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
-namespace CAstFfi.Extract.Domain.Explore;
+namespace CAstFfi.Extract.Infrastructure;
 // TODO: Add unit tests.
 // TODO: Allow for a custom resize function.
 // TODO: Use a struct enumerator.
