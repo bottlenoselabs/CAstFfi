@@ -6,6 +6,7 @@ using System.CommandLine;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Resources;
+using CAstFfi.Common;
 using CAstFfi.Extract.Input;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

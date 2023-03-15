@@ -4,9 +4,9 @@
 using System.Collections.Immutable;
 using CAstFfi.Data;
 using CAstFfi.Data.Serialization;
-using CAstFfi.Extract.Explore;
+using CAstFfi.Extract.Domain.Explore;
+using CAstFfi.Extract.Domain.Parse;
 using CAstFfi.Extract.Input;
-using CAstFfi.Extract.Parse;
 using Microsoft.Extensions.Logging;
 
 namespace CAstFfi.Extract;

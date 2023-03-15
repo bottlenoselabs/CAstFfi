@@ -4,6 +4,7 @@
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Text.Json;
+using CAstFfi.Common;
 using CAstFfi.Data;
 using CAstFfi.Extract.Input.Sanitized;
 using CAstFfi.Extract.Input.Unsanitized;

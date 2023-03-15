@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
+using CAstFfi.Common;
 using CAstFfi.Data;
 using CAstFfi.Data.Native;
 using CAstFfi.Data.Serialization;

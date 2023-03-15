@@ -3,6 +3,7 @@
 
 using System.IO;
 using System.IO.Abstractions;
+using CAstFfi.Common;
 using CAstFfi.Data.Native;
 using Microsoft.Extensions.Logging;
 

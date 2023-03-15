@@ -1,11 +1,9 @@
 // Copyright (c) Bottlenose Labs Inc. (https://github.com/bottlenoselabs). All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
-using CAstFfi.Data;
-using CAstFfi.Data.Serialization;
-using CAstFfi.Extract.Explore;
-using CAstFfi.Extract.Explore.Handlers;
-using CAstFfi.Extract.Parse;
+using CAstFfi.Extract.Domain.Explore;
+using CAstFfi.Extract.Domain.Explore.Handlers;
+using CAstFfi.Extract.Domain.Parse;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CAstFfi.Extract;
