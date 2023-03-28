@@ -34,7 +34,7 @@ public sealed partial class Parser
     public CXTranslationUnit TranslationUnit(
         string filePath,
         CTargetPlatform targetPlatform,
-        ParseOptions options,
+        ExtractParseOptions options,
         out ImmutableDictionary<string, string> linkedPaths,
         bool ignoreDiagnostics = false,
         bool keepGoing = false)
@@ -93,7 +93,7 @@ public sealed partial class Parser
     public ImmutableArray<MacroObjectCandidate> MacroObjectCandidates(
         CXTranslationUnit translationUnit,
         CTargetPlatform targetPlatform,
-        ParseOptions options)
+        ExtractParseOptions options)
     {
         var argumentsBuilderResult = _clangArgumentsBuilder.Build(
             targetPlatform,
@@ -109,7 +109,7 @@ public sealed partial class Parser
     public ImmutableArray<CMacroObject> MacroObjects(
         ImmutableArray<MacroObjectCandidate> macroObjectCandidates,
         CTargetPlatform targetPlatform,
-        ParseOptions options)
+        ExtractParseOptions options)
     {
         var argumentsBuilderResult = _clangArgumentsBuilder.Build(
             targetPlatform,
@@ -126,7 +126,7 @@ public sealed partial class Parser
     }
 
     private ImmutableArray<CMacroObject> Macros(
-        ParseOptions options,
+        ExtractParseOptions options,
         ImmutableArray<string> arguments,
         string filePath)
     {
@@ -146,7 +146,7 @@ public sealed partial class Parser
     }
 
     private ImmutableArray<CMacroObject> MacroObjects(
-        ParseOptions options, CXTranslationUnit translationUnit, StreamReader reader)
+        ExtractParseOptions options, CXTranslationUnit translationUnit, StreamReader reader)
     {
         var builder = ImmutableArray.CreateBuilder<CMacroObject>();
 
@@ -180,7 +180,7 @@ public sealed partial class Parser
     }
 
     private CMacroObject? MacroObject(
-        ParseOptions options,
+        ExtractParseOptions options,
         string name,
         CXCursor cursor,
         StreamReader reader,
@@ -210,7 +210,7 @@ public sealed partial class Parser
         {
             Name = name,
             Value = value,
-            Type = typeInfo,
+            TypeInfo = typeInfo,
             Location = location
         };
 
@@ -422,7 +422,7 @@ int main(void)
     }
 
     private ImmutableArray<MacroObjectCandidate> MacroObjectCandidates(
-        ParseOptions options, ImmutableArray<CXCursor> cursors, ImmutableDictionary<string, string> linkedPaths)
+        ExtractParseOptions options, ImmutableArray<CXCursor> cursors, ImmutableDictionary<string, string> linkedPaths)
     {
         var macroObjectsBuilder = ImmutableArray.CreateBuilder<MacroObjectCandidate>();
         foreach (var cursor in cursors)
@@ -510,7 +510,7 @@ int main(void)
 
     private static ImmutableArray<CXCursor> MacroObjectCursors(
         CXTranslationUnit translationUnit,
-        ParseOptions options)
+        ExtractParseOptions options)
     {
         var translationUnitCursor = clang_getTranslationUnitCursor(translationUnit);
 
@@ -524,7 +524,7 @@ int main(void)
 
     private static bool IsMacroOfInterest(
         CXCursor cursor,
-        ParseOptions options)
+        ExtractParseOptions options)
     {
         var kind = clang_getCursorKind(cursor);
         if (kind != CXCursorKind.CXCursor_MacroDefinition)

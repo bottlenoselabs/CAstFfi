@@ -6,7 +6,7 @@ using CAstFfi.Data.Serialization;
 
 namespace CAstFfi.Data;
 
-public abstract record CNodeWithLocation : CNode
+public abstract class CNodeWithLocation : CNode
 {
     [JsonPropertyName("location")]
     [JsonConverter(typeof(CLocationJsonConverter))]

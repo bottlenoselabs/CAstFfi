@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public record CFunctionPointer : CNodeWithLocation
+public class CFunctionPointer : CNodeWithLocation
 {
     [JsonPropertyName("type")]
     public CTypeInfo TypeInfo { get; set; } = null!;
@@ -24,5 +24,38 @@ public record CFunctionPointer : CNodeWithLocation
     public override string ToString()
     {
         return $"FunctionPointer {TypeInfo} @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CFunctionPointer other2)
+        {
+            return false;
+        }
+
+        return TypeInfo.Equals(other2.TypeInfo) &&
+               ReturnTypeInfo.Equals(other2.ReturnTypeInfo) &&
+               Parameters.SequenceEqual(other2.Parameters);
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(TypeInfo);
+        hashCode.Add(ReturnTypeInfo);
+
+        foreach (var parameter in Parameters)
+        {
+            hashCode.Add(parameter);
+        }
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }

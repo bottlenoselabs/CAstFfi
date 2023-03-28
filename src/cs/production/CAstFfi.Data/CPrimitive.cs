@@ -5,8 +5,33 @@ using System.Text.Json.Serialization;
 
 namespace CAstFfi.Data;
 
-public record CPrimitive : CNode
+public class CPrimitive : CNode
 {
     [JsonPropertyName("type")]
     public CTypeInfo TypeInfo { get; set; } = null!;
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CPrimitive other2)
+        {
+            return false;
+        }
+
+        return TypeInfo.Equals(other2.TypeInfo);
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(TypeInfo);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
+    }
 }

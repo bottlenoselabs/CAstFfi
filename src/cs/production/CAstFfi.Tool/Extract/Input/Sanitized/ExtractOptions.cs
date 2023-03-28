@@ -5,9 +5,9 @@ using System.Collections.Immutable;
 
 namespace CAstFfi.Extract.Input.Sanitized;
 
-public sealed class ProgramOptions
+public sealed class ExtractOptions
 {
     public string InputFilePath { get; init; } = string.Empty;
 
-    public ImmutableArray<AbstractSyntaxTreeOptions> AbstractSyntaxTreeOptions { get; set; }
+    public ImmutableArray<ExtractAbstractSyntaxTreeOptions> AbstractSyntaxTreeOptions { get; set; }
 }

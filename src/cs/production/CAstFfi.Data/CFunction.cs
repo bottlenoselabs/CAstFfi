@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public record CFunction : CNodeWithLocation
+public class CFunction : CNodeWithLocation
 {
     [JsonPropertyName("callingConvention")]
     public CFunctionCallingConvention CallingConvention { get; set; } = CFunctionCallingConvention.Cdecl;
@@ -23,5 +23,38 @@ public record CFunction : CNodeWithLocation
     public override string ToString()
     {
         return $"FunctionExtern '{Name}' @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CFunction other2)
+        {
+            return false;
+        }
+
+        return CallingConvention == other2.CallingConvention &&
+               ReturnTypeInfo.Equals(other2.ReturnTypeInfo) &&
+               Parameters.SequenceEqual(other2.Parameters);
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(CallingConvention);
+        hashCode.Add(ReturnTypeInfo);
+
+        foreach (var parameter in Parameters)
+        {
+            hashCode.Add(parameter);
+        }
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }

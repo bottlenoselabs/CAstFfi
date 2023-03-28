@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace CAstFfi.Extract.Input.Sanitized;
 
-public sealed class ParseOptions
+public sealed class ExtractParseOptions
 {
     public ImmutableArray<string> UserIncludeDirectories { get; init; } = ImmutableArray<string>.Empty;
 

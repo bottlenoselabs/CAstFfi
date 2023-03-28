@@ -269,7 +269,7 @@ public sealed class TestFixtureCCode : IDisposable
         var result = new CTestMacroObject
         {
             Name = value.Name,
-            TypeName = value.Type.Name,
+            TypeName = value.TypeInfo.Name,
             Value = value.Value
         };
 

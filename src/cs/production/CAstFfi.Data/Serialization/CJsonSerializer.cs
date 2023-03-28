@@ -100,7 +100,7 @@ public static class CJsonSerializer
             File.Delete(fullFilePath);
         }
 
-        var fileContents = System.Text.Json.JsonSerializer.Serialize(abstractSyntaxTree, ContextCrossPlatform.Options);
+        var fileContents = JsonSerializer.Serialize(abstractSyntaxTree, ContextCrossPlatform.Options);
 
         using var fileStream = File.OpenWrite(fullFilePath);
         using var textWriter = new StreamWriter(fileStream);

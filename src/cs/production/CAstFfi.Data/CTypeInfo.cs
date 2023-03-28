@@ -8,7 +8,7 @@ using CAstFfi.Data.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public class CTypeInfo
+public class CTypeInfo : IEquatable<CTypeInfo>
 {
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
@@ -75,4 +75,65 @@ public class CTypeInfo
         };
     }
 #pragma warning restore CA2211
+
+    public bool Equals(CTypeInfo? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return Name == other.Name &&
+               Kind == other.Kind &&
+               SizeOf == other.SizeOf &&
+               AlignOf == other.AlignOf &&
+               ElementSize == other.ElementSize &&
+               ArraySizeOf == other.ArraySizeOf &&
+               IsAnonymous == other.IsAnonymous &&
+               IsConst == other.IsConst &&
+               Equals(InnerTypeInfo, other.InnerTypeInfo);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
+        return Equals((CTypeInfo)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = default(HashCode);
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(Name);
+        hashCode.Add((int)Kind);
+        hashCode.Add(SizeOf);
+        hashCode.Add(AlignOf);
+        hashCode.Add(ElementSize);
+        hashCode.Add(ArraySizeOf);
+        hashCode.Add(IsAnonymous);
+        hashCode.Add(IsConst);
+        hashCode.Add(Location);
+        hashCode.Add(InnerTypeInfo);
+        return hashCode.ToHashCode();
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+    }
 }

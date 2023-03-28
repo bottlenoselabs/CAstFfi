@@ -27,7 +27,7 @@ public sealed partial class ClangArgumentsBuilder
 
     public ClangArgumentsBuilderResult Build(
         CTargetPlatform targetPlatform,
-        ParseOptions options,
+        ExtractParseOptions options,
         bool isCPlusPlus,
         bool ignoreWarnings)
     {

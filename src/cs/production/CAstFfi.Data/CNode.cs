@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public abstract record CNode : IComparable<CNode>
+public abstract class CNode : IComparable<CNode>, IEquatable<CNode>
 {
     [JsonPropertyName("comment")]
     public string Comment { get; set; } = string.Empty;
@@ -85,5 +85,60 @@ public abstract record CNode : IComparable<CNode>
     public static bool operator <=(CNode first, CNode second)
     {
         return first.CompareTo(second) <= 0;
+    }
+
+    public virtual bool Equals(CNode? other)
+    {
+        if (ReferenceEquals(null, other))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return Name == other.Name && Comment == other.Comment;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
+        return Equals((CNode)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Name, Comment);
+    }
+
+    public static bool operator ==(CNode? left, CNode? right)
+    {
+        if (left is null)
+        {
+            return right is null;
+        }
+
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(CNode? left, CNode? right)
+    {
+        return !(left == right);
     }
 }

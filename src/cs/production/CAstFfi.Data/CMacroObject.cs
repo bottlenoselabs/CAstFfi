@@ -6,10 +6,10 @@ using System.Text.Json.Serialization;
 
 namespace CAstFfi.Data;
 
-public record CMacroObject : CNodeWithLocation
+public class CMacroObject : CNodeWithLocation
 {
     [JsonPropertyName("type")]
-    public CTypeInfo Type { get; set; } = null!;
+    public CTypeInfo TypeInfo { get; set; } = null!;
 
     [JsonPropertyName("value")]
     public string Value { get; set; } = string.Empty;
@@ -18,5 +18,31 @@ public record CMacroObject : CNodeWithLocation
     public override string ToString()
     {
         return $"Macro '{Name}' : {Value} @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CMacroObject other2)
+        {
+            return false;
+        }
+
+        return TypeInfo.Equals(other2.TypeInfo) && Value == other2.Value;
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(TypeInfo);
+        hashCode.Add(Value);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }

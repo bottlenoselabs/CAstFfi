@@ -38,7 +38,7 @@ public class EnumConstantExplorer : ExploreNodeHandler<CEnumConstant>
         {
             Name = info.Name,
             Location = info.Location == CLocation.NoLocation ? info.Parent!.Location : info.Location,
-            Type = typeInfo,
+            TypeInfo = typeInfo,
             Value = value,
             Comment = comment
         };

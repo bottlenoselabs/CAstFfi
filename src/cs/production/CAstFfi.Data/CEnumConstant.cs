@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public record CEnumConstant : CNodeWithLocation
+public class CEnumConstant : CNodeWithLocation
 {
     [JsonPropertyName("name")]
     public new string Name
@@ -17,7 +17,7 @@ public record CEnumConstant : CNodeWithLocation
     }
 
     [JsonPropertyName("type")]
-    public CTypeInfo Type { get; set; } = null!;
+    public CTypeInfo TypeInfo { get; set; } = null!;
 
     [JsonPropertyName("value")]
     public string Value { get; set; } = string.Empty;
@@ -26,5 +26,31 @@ public record CEnumConstant : CNodeWithLocation
     public override string ToString()
     {
         return $"EnumValue '{Name}' = {Value}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CEnumConstant other2)
+        {
+            return false;
+        }
+
+        return TypeInfo.Equals(other2.TypeInfo) && Value == other2.Value;
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(TypeInfo);
+        hashCode.Add(Value);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }
