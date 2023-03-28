@@ -302,7 +302,7 @@ public sealed partial class MergeAbstractSyntaxTreesTool
     [LoggerMessage(1, LogLevel.Error, "The node '{NodeName}' of kind '{NodeActualKind}' for platform '{NodePlatform}' does not match the kind '{nodeExpectedKind}' for platform {NodePlatformExpectedKind}.")]
     private partial void LogNodeNotSameKind(string nodeName, string nodeActualKind, string nodePlatform, string nodeExpectedKind, string nodePlatformExpectedKind);
 
-    [LoggerMessage(2, LogLevel.Error, "The node '{NodeName}' ...")]
+    [LoggerMessage(2, LogLevel.Error, "The node '{NodeName}' is not equal to all other platform nodes of the same name.")]
     private partial void LogNodeNotEqual(string nodeName);
 
     [LoggerMessage(3, LogLevel.Information, "Success. Merged syntax trees for the target platforms '{TargetPlatformsString}': {FilePath}")]
