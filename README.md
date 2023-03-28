@@ -34,7 +34,7 @@ graph LR
 
     end
 
-    subgraph castffi
+    subgraph CAstFfi: extract
 
     PARSE_AST_WINDOWS[Parse <br> abstract syntax tree]
     PARSE_AST_MACOS[Parse <br> abstract ayntax tree]
@@ -75,11 +75,11 @@ graph LR
 
     end
 
-    subgraph Auxiliary bindgen program: C to target X language
+    subgraph CAstFfi: merge
 
-    X_MAP_WINDOWS[Map C to X language]
-    X_MAP_MACOS[Map C to X language]
-    X_MAP_LINUX[Map C to X language]
+    X_MAP_WINDOWS[Map target-platform AST to cross-platform AST]
+    X_MAP_MACOS[Map target-platform AST to cross-platform AST]
+    X_MAP_LINUX[Map target-platform AST to cross-platform AST]
 
     JSON_AST_WINDOWS -.-> |Any OS| X_MAP_WINDOWS
     JSON_AST_MACOS -.-> |Any OS| X_MAP_MACOS
@@ -193,7 +193,7 @@ dotnet tool install bottlenoselabs.castffi.tool -g
 
 #### Windows
 
-`config_windows.json`:
+`config-windows.json`:
 ```json
 {
   "inputFilePath": "path/to/libary/include/header.h",
@@ -214,7 +214,7 @@ castffi extract path/to/config_windows.json
 
 #### macOS
 
-`config_macos.json`:
+`config-macos.json`:
 ```json
 {
   "inputFilePath": "path/to/libary/include/header.h",
@@ -235,7 +235,7 @@ castffi extract path/to/config_macos.json
 
 #### Linux
 
-`config_linux.json`:
+`config-linux.json`:
 ```json
 {
   "inputFilePath": "path/to/libary/include/header.h",
