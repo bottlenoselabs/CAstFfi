@@ -12,36 +12,36 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CAstFfi.Extract.Input;
 
-public sealed class ProgramInputSanitizer
+public sealed class ExtractInputSanitizer
 {
     private readonly IFileSystem _fileSystem;
 
-    public ProgramInputSanitizer(IFileSystem fileSystem)
+    public ExtractInputSanitizer(IFileSystem fileSystem)
     {
         _fileSystem = fileSystem;
     }
 
-    public ProgramOptions SanitizeFromFile(string filePath)
+    public ExtractOptions SanitizeFromFile(string filePath)
     {
         if (!_fileSystem.File.Exists(filePath))
         {
-            throw new ProgramInputSanitizationException($"The program options file '{filePath}' does not exist.");
+            throw new InputSanitizationException($"The extract options file '{filePath}' does not exist.");
         }
 
         var fileContents = _fileSystem.File.ReadAllText(filePath);
         if (string.IsNullOrEmpty(fileContents))
         {
-            throw new ProgramInputSanitizationException($"The program options file '{filePath}' is empty.");
+            throw new InputSanitizationException($"The extract options file '{filePath}' is empty.");
         }
 
         var serializerOptions = new JsonSerializerOptions
         {
             AllowTrailingCommas = true
         };
-        var unsanitizedProgramOptions = JsonSerializer.Deserialize<UnsanitizedProgramOptions>(fileContents, serializerOptions);
+        var unsanitizedProgramOptions = JsonSerializer.Deserialize<UnsanitizedExtractOptions>(fileContents, serializerOptions);
         if (unsanitizedProgramOptions == null)
         {
-            throw new ProgramInputSanitizationException("The program options file is null.");
+            throw new InputSanitizationException("The extract options file is null.");
         }
 
         var previousCurrentDirectory = Environment.CurrentDirectory;
@@ -52,12 +52,12 @@ public sealed class ProgramInputSanitizer
         return result;
     }
 
-    private ProgramOptions Sanitize(UnsanitizedProgramOptions options)
+    private ExtractOptions Sanitize(UnsanitizedExtractOptions options)
     {
         var inputFilePath = VerifyInputHeaderFilePath(options.InputFilePath);
         var abstractSyntaxTreeOptions = VerifyAbstractSyntaxTreeOptions(options, inputFilePath);
 
-        var result = new ProgramOptions
+        var result = new ExtractOptions
         {
             InputFilePath = inputFilePath,
             AbstractSyntaxTreeOptions = abstractSyntaxTreeOptions
@@ -66,32 +66,32 @@ public sealed class ProgramInputSanitizer
         return result;
     }
 
-    private ImmutableArray<AbstractSyntaxTreeOptions> VerifyAbstractSyntaxTreeOptions(
-        UnsanitizedProgramOptions programOptions,
+    private ImmutableArray<ExtractAbstractSyntaxTreeOptions> VerifyAbstractSyntaxTreeOptions(
+        UnsanitizedExtractOptions extractOptions,
         string inputFilePath)
     {
-        var abstractSyntaxTreeOptionsBuilder = ImmutableArray.CreateBuilder<AbstractSyntaxTreeOptions>();
-        if (programOptions.Platforms == null)
+        var abstractSyntaxTreeOptionsBuilder = ImmutableArray.CreateBuilder<ExtractAbstractSyntaxTreeOptions>();
+        if (extractOptions.Platforms == null)
         {
-            var abstractSyntaxTreeRequests = new Dictionary<string, UnsanitizedTargetPlatformOptions>();
+            var abstractSyntaxTreeRequests = new Dictionary<string, UnsanitizedExtractOptionsTargetPlatform>();
             var targetPlatform = NativeUtility.HostPlatform.ToString();
-            abstractSyntaxTreeRequests.Add(targetPlatform, new UnsanitizedTargetPlatformOptions());
-            programOptions.Platforms = abstractSyntaxTreeRequests.ToImmutableDictionary();
+            abstractSyntaxTreeRequests.Add(targetPlatform, new UnsanitizedExtractOptionsTargetPlatform());
+            extractOptions.Platforms = abstractSyntaxTreeRequests.ToImmutableDictionary();
         }
 
-        foreach (var (targetPlatformString, targetPlatformOptions) in programOptions.Platforms)
+        foreach (var (targetPlatformString, targetPlatformOptions) in extractOptions.Platforms)
         {
-            var abstractSyntaxTreeOptions = SanitizeOptions(programOptions, targetPlatformString, targetPlatformOptions, inputFilePath);
+            var abstractSyntaxTreeOptions = SanitizeOptions(extractOptions, targetPlatformString, targetPlatformOptions, inputFilePath);
             abstractSyntaxTreeOptionsBuilder.Add(abstractSyntaxTreeOptions);
         }
 
         return abstractSyntaxTreeOptionsBuilder.ToImmutable();
     }
 
-    private AbstractSyntaxTreeOptions SanitizeOptions(
-        UnsanitizedProgramOptions options,
+    private ExtractAbstractSyntaxTreeOptions SanitizeOptions(
+        UnsanitizedExtractOptions options,
         string targetPlatformString,
-        UnsanitizedTargetPlatformOptions targetPlatformOptions,
+        UnsanitizedExtractOptionsTargetPlatform targetPlatformOptions,
         string inputFilePath)
     {
         var systemIncludeDirectories = VerifyImmutableArray(options.SystemIncludeDirectories);
@@ -115,16 +115,16 @@ public sealed class ProgramInputSanitizer
 
         var targetPlatform = new CTargetPlatform(targetPlatformString);
 
-        var inputAbstractSyntaxTree = new AbstractSyntaxTreeOptions
+        var inputAbstractSyntaxTree = new ExtractAbstractSyntaxTreeOptions
         {
             TargetPlatform = targetPlatform,
             OutputFilePath = outputFilePath,
-            ExplorerOptions = new ExploreOptions
+            ExplorerOptions = new ExtractExploreOptions
             {
                 IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
                 IsEnabledOnlyExternalTopLevelCursors = options.IsEnabledOnlyExternalTopLevelCursors ?? true,
             },
-            ParseOptions = new ParseOptions
+            ParseOptions = new ExtractParseOptions
             {
                 UserIncludeDirectories = userIncludeDirectoriesPlatform,
                 SystemIncludeDirectories = systemIncludeDirectoriesPlatform,
@@ -144,14 +144,14 @@ public sealed class ProgramInputSanitizer
     {
         if (string.IsNullOrEmpty(inputFilePath))
         {
-            throw new ProgramInputSanitizationException("The C input file can not be null, empty, or whitespace.");
+            throw new InputSanitizationException("The C input file can not be null, empty, or whitespace.");
         }
 
         var filePath = _fileSystem.Path.GetFullPath(inputFilePath);
 
         if (!_fileSystem.File.Exists(filePath))
         {
-            throw new ProgramInputSanitizationException($"The C input file does not exist: `{filePath}`.");
+            throw new InputSanitizationException($"The C input file does not exist: `{filePath}`.");
         }
 
         return filePath;
@@ -204,7 +204,7 @@ public sealed class ProgramInputSanitizer
         {
             if (!_fileSystem.Directory.Exists(includeDirectory))
             {
-                throw new ProgramInputSanitizationException($"The include directory does not exist: `{includeDirectory}`.");
+                throw new InputSanitizationException($"The include directory does not exist: `{includeDirectory}`.");
             }
         }
 

@@ -80,7 +80,7 @@ public static class Startup
         services.AddSingleton<IFileSystem, FileSystem>();
         services.AddHostedService<CommandLineHost>();
         services.AddSingleton<RootCommand, CommandLineInterface>();
-        services.AddSingleton<ProgramInputSanitizer>();
+        services.AddSingleton<ExtractInputSanitizer>();
 
         Extract.Startup.ConfigureServices(services);
         Merge.Startup.ConfigureServices(services);

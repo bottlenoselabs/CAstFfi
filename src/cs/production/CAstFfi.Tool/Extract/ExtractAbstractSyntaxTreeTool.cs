@@ -15,18 +15,18 @@ public sealed partial class ExtractAbstractSyntaxTreeTool
 {
     private readonly ILogger<ExtractAbstractSyntaxTreeTool> _logger;
 
-    private readonly ProgramInputSanitizer _programInputSanitizer;
+    private readonly ExtractInputSanitizer _extractInputSanitizer;
     private readonly ClangInstaller _clangInstaller;
     private readonly Explorer _explorer;
 
     public ExtractAbstractSyntaxTreeTool(
         ILogger<ExtractAbstractSyntaxTreeTool> logger,
-        ProgramInputSanitizer programInputSanitizer,
+        ExtractInputSanitizer extractInputSanitizer,
         ClangInstaller clangInstaller,
         Explorer explorer)
     {
         _logger = logger;
-        _programInputSanitizer = programInputSanitizer;
+        _extractInputSanitizer = extractInputSanitizer;
         _clangInstaller = clangInstaller;
         _explorer = explorer;
     }
@@ -39,40 +39,44 @@ public sealed partial class ExtractAbstractSyntaxTreeTool
             return;
         }
 
-        var programOptions = _programInputSanitizer.SanitizeFromFile(configurationFilePath);
-        foreach (var options in programOptions.AbstractSyntaxTreeOptions)
+        var options = _extractInputSanitizer.SanitizeFromFile(configurationFilePath);
+        foreach (var astOptions in options.AbstractSyntaxTreeOptions)
         {
             var abstractSyntaxTree = _explorer.GetAbstractSyntaxTree(
-                programOptions.InputFilePath,
-                options.TargetPlatform,
-                options.ParseOptions,
-                options.ExplorerOptions);
+                options.InputFilePath,
+                astOptions.TargetPlatform,
+                astOptions.ParseOptions,
+                astOptions.ExplorerOptions);
 
             try
             {
-                CJsonSerializer.WriteAbstractSyntaxTreeTargetPlatform(abstractSyntaxTree, options.OutputFilePath);
+                CJsonSerializer.WriteAbstractSyntaxTreeTargetPlatform(abstractSyntaxTree, astOptions.OutputFilePath);
             }
 #pragma warning disable CA1031
             catch (Exception e)
 #pragma warning restore CA1031
             {
-                LocalFailure(e, abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
+                LogWriteAbstractSyntaxTreeTargetPlatformFailure(e, abstractSyntaxTree.PlatformRequested, astOptions.OutputFilePath);
                 return;
             }
 
-            LocalSuccess(abstractSyntaxTree.PlatformRequested, options.OutputFilePath);
+            LogWriteAbstractSyntaxTreeTargetPlatformSuccess(abstractSyntaxTree.PlatformRequested, astOptions.OutputFilePath);
         }
 
-        var targetPlatforms = programOptions.AbstractSyntaxTreeOptions.Select(x => x.TargetPlatform).ToImmutableArray();
-        TotalSuccess(targetPlatforms);
+        var targetPlatforms = options.AbstractSyntaxTreeOptions.Select(x => x.TargetPlatform).ToImmutableArray();
+        LogSuccess(targetPlatforms);
     }
 
     [LoggerMessage(0, LogLevel.Information, "Success. Extracted abstract syntax tree for the target platform '{TargetPlatform}': {FilePath}")]
-    private partial void LocalSuccess(CTargetPlatform targetPlatform, string filePath);
+    private partial void LogWriteAbstractSyntaxTreeTargetPlatformSuccess(
+        CTargetPlatform targetPlatform,
+        string filePath);
 
     [LoggerMessage(1, LogLevel.Error, "Failed to extract abstract syntax tree for the target platform '{TargetPlatform}': {FilePath}")]
-    private partial void LocalFailure(Exception exception, CTargetPlatform targetPlatform, string filePath);
+    private partial void LogWriteAbstractSyntaxTreeTargetPlatformFailure(Exception exception,
+        CTargetPlatform targetPlatform,
+        string filePath);
 
     [LoggerMessage(2, LogLevel.Information, "Success. Extracted abstract syntax trees for the target platforms '{TargetPlatforms}'.")]
-    private partial void TotalSuccess(ImmutableArray<CTargetPlatform> targetPlatforms);
+    private partial void LogSuccess(ImmutableArray<CTargetPlatform> targetPlatforms);
 }

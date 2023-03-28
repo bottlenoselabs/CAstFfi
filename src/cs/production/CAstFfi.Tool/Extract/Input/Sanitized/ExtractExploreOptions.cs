@@ -3,7 +3,7 @@
 
 namespace CAstFfi.Extract.Input.Sanitized;
 
-public sealed class ExploreOptions
+public sealed class ExtractExploreOptions
 {
     public bool IsEnabledSystemDeclarations { get; init; }
 

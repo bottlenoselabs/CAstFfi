@@ -19,8 +19,8 @@ public sealed class ExploreContext
         ImmutableDictionary<CKind, ExploreHandler> handlers,
         CTargetPlatform targetPlatformRequested,
         CXTranslationUnit translationUnit,
-        ExploreOptions exploreExploreOptions,
-        ParseOptions parseOptions,
+        ExtractExploreOptions exploreExploreOptions,
+        ExtractParseOptions parseOptions,
         Action<ExploreContext, CKind, ExploreInfoNode> tryEnqueueVisitNode,
         ImmutableDictionary<string, string> linkedPaths)
     {
@@ -37,9 +37,9 @@ public sealed class ExploreContext
         _handlers = handlers;
     }
 
-    public ExploreOptions ExploreOptions { get; }
+    public ExtractExploreOptions ExploreOptions { get; }
 
-    public ParseOptions ParseOptions { get; }
+    public ExtractParseOptions ParseOptions { get; }
 
     public CTargetPlatform TargetPlatformRequested { get; }
 

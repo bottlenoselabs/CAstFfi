@@ -3,14 +3,13 @@
 
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
-using CAstFfi.Data;
 using JetBrains.Annotations;
 
 namespace CAstFfi.Extract.Input.Unsanitized;
 
 // NOTE: This class is considered un-sanitized input; all strings and other types could be null.
 [PublicAPI]
-public sealed class UnsanitizedProgramOptions
+public sealed class UnsanitizedExtractOptions
 {
     /// <summary>
     ///     The path of the output abstract syntax tree directory.
@@ -119,7 +118,7 @@ public sealed class UnsanitizedProgramOptions
     ///     The target platform configurations for extracting the abstract syntax trees.
     /// </summary>
     [JsonPropertyName("platforms")]
-    public ImmutableDictionary<string, UnsanitizedTargetPlatformOptions>? Platforms { get; set; }
+    public ImmutableDictionary<string, UnsanitizedExtractOptionsTargetPlatform>? Platforms { get; set; }
 
     /// <summary>
     ///     The names of libraries and/or interfaces for macOS, iOS, tvOS or watchOS.

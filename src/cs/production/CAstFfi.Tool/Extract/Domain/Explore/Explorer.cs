@@ -52,8 +52,8 @@ public sealed partial class Explorer
     public CAbstractSyntaxTreeTargetPlatform GetAbstractSyntaxTree(
         string headerFilePath,
         CTargetPlatform targetPlatform,
-        ParseOptions parseOptions,
-        ExploreOptions exploreOptions)
+        ExtractParseOptions parseOptions,
+        ExtractExploreOptions exploreOptions)
     {
         CAbstractSyntaxTreeTargetPlatform result;
 

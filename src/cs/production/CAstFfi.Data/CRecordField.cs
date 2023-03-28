@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace CAstFfi.Data;
 
 // NOTE: Properties are required for System.Text.Json serialization
-public record CRecordField : CNodeWithLocation
+public class CRecordField : CNodeWithLocation
 {
     [JsonPropertyName("name")]
     public new string Name
@@ -26,5 +26,31 @@ public record CRecordField : CNodeWithLocation
     public override string ToString()
     {
         return $"Record field '{Name}': {TypeInfo} @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CRecordField other2)
+        {
+            return false;
+        }
+
+        return TypeInfo.Equals(other2.TypeInfo) && OffsetOf == other2.OffsetOf;
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(TypeInfo);
+        hashCode.Add(OffsetOf);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }

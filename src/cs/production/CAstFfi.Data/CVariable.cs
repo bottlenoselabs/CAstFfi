@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CAstFfi.Data;
 
-public record CVariable : CNodeWithLocation
+public class CVariable : CNodeWithLocation
 {
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
@@ -15,5 +15,30 @@ public record CVariable : CNodeWithLocation
     public override string ToString()
     {
         return $"Variable '{Name}': {Type} @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not CVariable other2)
+        {
+            return false;
+        }
+
+        return Type == other2.Type;
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(Type);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }

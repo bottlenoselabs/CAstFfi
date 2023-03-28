@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CAstFfi.Data;
 
-public record COpaqueType : CNodeWithLocation
+public class COpaqueType : CNodeWithLocation
 {
     [JsonPropertyName("sizeOf")]
     public int SizeOf { get; set; }
@@ -15,5 +15,30 @@ public record COpaqueType : CNodeWithLocation
     public override string ToString()
     {
         return $"OpaqueType '{Name}' @ {Location}";
+    }
+
+    public override bool Equals(CNode? other)
+    {
+        if (!base.Equals(other) || other is not COpaqueType other2)
+        {
+            return false;
+        }
+
+        return SizeOf == other2.SizeOf;
+    }
+
+    public override int GetHashCode()
+    {
+        var baseHashCode = base.GetHashCode();
+
+        var hashCode = default(HashCode);
+        hashCode.Add(baseHashCode);
+
+        // ReSharper disable NonReadonlyMemberInGetHashCode
+        hashCode.Add(SizeOf);
+
+        // ReSharper restore NonReadonlyMemberInGetHashCode
+
+        return hashCode.ToHashCode();
     }
 }
