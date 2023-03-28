@@ -54,7 +54,7 @@ graph LR
 
     end
 
-    subgraph Artifacts
+    subgraph Artifacts: target-platform
     
     C_HEADER -.-> |Windows| C_COMPILED_WINDOWS
     C_SOURCE -.-> |Windows| C_COMPILED_WINDOWS
@@ -65,29 +65,37 @@ graph LR
     C_HEADER -.-> |Linux| C_COMPILED_LINUX
     C_SOURCE -.-> |Linux| C_COMPILED_LINUX
 
-    JSON_AST_WINDOWS(Extracted abstract syntax tree <br> .json)
-    JSON_AST_MACOS(Extracted abstract syntax tree <br> .json)
-    JSON_AST_LINUX(Extracted abstract syntax tree <br> .json)
+    JSON_PLATFORM_AST_WINDOWS(Extracted platform abstract syntax tree <br> .json)
+    JSON_PLATFORM_AST_MACOS(Extracted platform abstract syntax tree <br> .json)
+    JSON_PLATFORM_AST_LINUX(Extracted platform abstract syntax tree <br> .json)
 
-    PARSE_AST_WINDOWS -.-> |Windows| JSON_AST_WINDOWS
-    PARSE_AST_MACOS -.-> |macOS| JSON_AST_MACOS
-    PARSE_AST_LINUX -.-> |Linux| JSON_AST_LINUX
+    PARSE_AST_WINDOWS -.-> |Windows| JSON_PLATFORM_AST_WINDOWS
+    PARSE_AST_MACOS -.-> |macOS| JSON_PLATFORM_AST_MACOS
+    PARSE_AST_LINUX -.-> |Linux| JSON_PLATFORM_AST_LINUX
 
     end
 
     subgraph CAstFfi: merge
 
-    X_MAP_WINDOWS[Map target-platform AST to cross-platform AST]
-    X_MAP_MACOS[Map target-platform AST to cross-platform AST]
-    X_MAP_LINUX[Map target-platform AST to cross-platform AST]
+    MERGE_AST["Merge platform ASTs to cross-platform AST"]
 
-    JSON_AST_WINDOWS -.-> |Any OS| X_MAP_WINDOWS
-    JSON_AST_MACOS -.-> |Any OS| X_MAP_MACOS
-    JSON_AST_LINUX -.-> |Any OS| X_MAP_LINUX
+    JSON_PLATFORM_AST_WINDOWS -.-> |Any OS| MERGE_AST
+    JSON_PLATFORM_AST_MACOS -.-> |Any OS| MERGE_AST
+    JSON_PLATFORM_AST_LINUX -.-> |Any OS| MERGE_AST
 
-    X_MAP_WINDOWS --> X_CODE_GENERATOR[X language code <br> generator]
-    X_MAP_MACOS --> X_CODE_GENERATOR
-    X_MAP_LINUX --> X_CODE_GENERATOR
+    end
+
+    subgraph Artifacts: cross-platform
+
+    JSON_CROSS_AST(Cross-platform abstract syntax tree <br> .json)
+
+    MERGE_AST -.-> JSON_CROSS_AST
+
+    end
+
+    subgraph Your Bindgen Tool
+
+    JSON_CROSS_AST --> X_CODE_GENERATOR[X language code <br> generator]
 
     end
 
