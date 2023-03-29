@@ -23,12 +23,13 @@ public sealed class ExtractInputSanitizer
 
     public ExtractOptions SanitizeFromFile(string filePath)
     {
-        if (!_fileSystem.File.Exists(filePath))
+        var fullFilePath = _fileSystem.Path.GetFullPath(filePath);
+        if (!_fileSystem.File.Exists(fullFilePath))
         {
             throw new InputSanitizationException($"The extract options file '{filePath}' does not exist.");
         }
 
-        var fileContents = _fileSystem.File.ReadAllText(filePath);
+        var fileContents = _fileSystem.File.ReadAllText(fullFilePath);
         if (string.IsNullOrEmpty(fileContents))
         {
             throw new InputSanitizationException($"The extract options file '{filePath}' is empty.");
