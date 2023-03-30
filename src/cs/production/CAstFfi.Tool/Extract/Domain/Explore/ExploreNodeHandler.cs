@@ -20,7 +20,7 @@ public abstract partial class ExploreHandler
 {
     private readonly bool _logAlreadyExplored;
     private readonly ILogger<ExploreHandler> _logger;
-    private readonly Dictionary<string, CLocation> _visitedNames = new();
+    private readonly Dictionary<string, CLocation?> _visitedNames = new();
 
     protected ExploreHandler(ILogger<ExploreHandler> logger, bool logAlreadyExplored = true)
     {
@@ -34,16 +34,16 @@ public abstract partial class ExploreHandler
 
     internal CNode? ExploreInternal(ExploreContext context, ExploreInfoNode info)
     {
-        LogExploring(info.Kind, info.Name, info.Location!.Value);
+        LogExploring(info.Kind, info.Name, info.Location);
         var result = Explore(context, info);
 
         if (result == null)
         {
-            LogExplored(info.Kind, info.Name, info.Location!.Value);
+            LogExplored(info.Kind, info.Name, info.Location);
             return null;
         }
 
-        LogSkipped(info.Kind, info.Name, info.Location!.Value);
+        LogSkipped(info.Kind, info.Name, info.Location);
         return result;
     }
 
@@ -108,7 +108,7 @@ public abstract partial class ExploreHandler
         return false;
     }
 
-    private bool IsAlreadyVisited(string name, out CLocation firstLocation)
+    private bool IsAlreadyVisited(string name, out CLocation? firstLocation)
     {
         var result = _visitedNames.TryGetValue(name, out firstLocation);
         return result;
@@ -118,7 +118,7 @@ public abstract partial class ExploreHandler
     {
         try
         {
-            _visitedNames.Add(info.Name, info.Location!.Value);
+            _visitedNames.Add(info.Name, info.Location);
         }
         catch (Exception e)
         {
@@ -134,14 +134,14 @@ public abstract partial class ExploreHandler
     private partial void LogFailureUnexpectedType(CXTypeKind kind);
 
     [LoggerMessage(2, LogLevel.Debug, "- Exploring {Kind} '{Name}' ({Location})'")]
-    private partial void LogExploring(CKind kind, string name, CLocation location);
+    private partial void LogExploring(CKind kind, string name, CLocation? location);
 
     [LoggerMessage(3, LogLevel.Error, "- Already visited {Kind} '{Name}' ({Location})")]
-    private partial void LogAlreadyVisited(CKind kind, string name, CLocation location);
+    private partial void LogAlreadyVisited(CKind kind, string name, CLocation? location);
 
     [LoggerMessage(4, LogLevel.Debug, "- Explored {Kind} '{Name}' ({Location})'")]
-    private partial void LogExplored(CKind kind, string name, CLocation location);
+    private partial void LogExplored(CKind kind, string name, CLocation? location);
 
     [LoggerMessage(5, LogLevel.Debug, "- Skipped {Kind} '{Name}' ({Location})'")]
-    private partial void LogSkipped(CKind kind, string name, CLocation location);
+    private partial void LogSkipped(CKind kind, string name, CLocation? location);
 }
