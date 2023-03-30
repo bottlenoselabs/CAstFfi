@@ -35,8 +35,7 @@ public class CTypeInfo : IEquatable<CTypeInfo>
     public bool IsConst { get; set; }
 
     [JsonPropertyName("location")]
-    [JsonConverter(typeof(CLocationJsonConverter))]
-    public CLocation Location { get; set; }
+    public CLocation? Location { get; set; }
 
     [JsonPropertyName("innerType")]
     public CTypeInfo? InnerTypeInfo { get; set; }
@@ -55,7 +54,7 @@ public class CTypeInfo : IEquatable<CTypeInfo>
         SizeOf = 0,
         AlignOf = null,
         ArraySizeOf = null,
-        Location = CLocation.NoLocation,
+        Location = null,
         IsAnonymous = null
     };
 
@@ -69,7 +68,7 @@ public class CTypeInfo : IEquatable<CTypeInfo>
             AlignOf = pointerSize,
             ElementSize = null,
             ArraySizeOf = null,
-            Location = CLocation.NoLocation,
+            Location = null,
             IsAnonymous = null,
             InnerTypeInfo = Void
         };
@@ -88,15 +87,13 @@ public class CTypeInfo : IEquatable<CTypeInfo>
             return true;
         }
 
-        return Name == other.Name &&
-               Kind == other.Kind &&
+        return Kind == other.Kind &&
                SizeOf == other.SizeOf &&
                AlignOf == other.AlignOf &&
                ElementSize == other.ElementSize &&
                ArraySizeOf == other.ArraySizeOf &&
                IsAnonymous == other.IsAnonymous &&
-               IsConst == other.IsConst &&
-               Equals(InnerTypeInfo, other.InnerTypeInfo);
+               IsConst == other.IsConst;
     }
 
     public override bool Equals(object? obj)

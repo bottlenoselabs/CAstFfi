@@ -63,7 +63,7 @@ public sealed class ExploreContext
             kind = kindHint.Value;
         }
 
-        while (rootInfo != null && rootInfo.Location == CLocation.NoLocation)
+        while (rootInfo is { Location: null })
         {
             rootInfo = rootInfo.Parent;
         }
@@ -76,14 +76,14 @@ public sealed class ExploreContext
         return typeInfo;
     }
 
-    public string Comment(CXCursor cursor)
+    public string? Comment(CXCursor cursor)
     {
         var commentStringC = clang_Cursor_getRawCommentText(cursor);
         var commentString = commentStringC.String();
-        return commentString;
+        return string.IsNullOrEmpty(commentString) ? null : commentString;
     }
 
-    public CLocation Location(
+    public CLocation? Location(
         CXCursor cursor,
         CXType type)
     {
@@ -104,7 +104,7 @@ public sealed class ExploreContext
         ExploreInfoNode? parentInfo)
     {
         var location = Location(cursor, type);
-        if (location.IsNull && parentInfo?.Kind == CKind.TypeAlias)
+        if (location is null && parentInfo?.Kind == CKind.TypeAlias)
         {
             location = parentInfo.Location;
         }

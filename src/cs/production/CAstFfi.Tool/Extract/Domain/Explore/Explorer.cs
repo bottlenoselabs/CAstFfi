@@ -279,7 +279,7 @@ public sealed partial class Explorer
 
     private void FoundNode(CNode node)
     {
-        var location = node is CNodeWithLocation nodeWithLocation ? nodeWithLocation.Location : CLocation.NoLocation;
+        var location = node is CNodeWithLocation nodeWithLocation ? nodeWithLocation.Location : null;
         LogFoundNode(node.Kind, node.Name, location);
 
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
@@ -631,8 +631,8 @@ public sealed partial class Explorer
     private partial void LogFoundTypes(int foundCount, string names);
 
     [LoggerMessage(13, LogLevel.Debug, "- Enqueued {Kind} '{Name}' ({Location})")]
-    private partial void LogEnqueue(CKind kind, string name, CLocation location);
+    private partial void LogEnqueue(CKind kind, string name, CLocation? location);
 
     [LoggerMessage(14, LogLevel.Information, "- Found {Kind} '{Name}' ({Location})")]
-    private partial void LogFoundNode(CKind kind, string name, CLocation location);
+    private partial void LogFoundNode(CKind kind, string name, CLocation? location);
 }

@@ -9,7 +9,7 @@ namespace CAstFfi.Data;
 public abstract class CNode : IComparable<CNode>, IEquatable<CNode>
 {
     [JsonPropertyName("comment")]
-    public string Comment { get; set; } = string.Empty;
+    public string? Comment { get; set; }
 
     [JsonIgnore]
     public string Name { get; set; } = string.Empty;
@@ -99,7 +99,7 @@ public abstract class CNode : IComparable<CNode>, IEquatable<CNode>
             return true;
         }
 
-        return Name == other.Name && Comment == other.Comment;
+        return Name == other.Name;
     }
 
     public override bool Equals(object? obj)

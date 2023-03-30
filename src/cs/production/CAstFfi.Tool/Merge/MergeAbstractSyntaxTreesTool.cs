@@ -62,7 +62,7 @@ public sealed partial class MergeAbstractSyntaxTreesTool
 
     private CAbstractSyntaxTreeCrossPlatform CreateCrossPlatformAbstractSyntaxTree(
         ImmutableArray<CTargetPlatform> platforms,
-        ImmutableDictionary<string, ImmutableArray<CNodeWithTargetPlatform>> platformNodesByName)
+        ImmutableSortedDictionary<string, ImmutableArray<CNodeWithTargetPlatform>> platformNodesByName)
     {
         var result = new CAbstractSyntaxTreeCrossPlatform();
 
@@ -87,14 +87,16 @@ public sealed partial class MergeAbstractSyntaxTreesTool
     private void AddCrossPlatformNode(CNodeWithTargetPlatform nodeWithTargetPlatform)
     {
         var node = nodeWithTargetPlatform.Node;
+
         if (node is CNodeWithLocation nodeWithLocation)
         {
-            nodeWithLocation.Location = CLocation.NoLocation;
+            nodeWithLocation.Location = null;
         }
 
         switch (node)
         {
             case CEnum @enum:
+                ClearLocationForTypeInfo(@enum.IntegerTypeInfo);
                 _enums.Add(@enum);
                 break;
             case CVariable variable:
@@ -104,25 +106,57 @@ public sealed partial class MergeAbstractSyntaxTreesTool
                 _opaqueTypes.Add(opaqueType);
                 break;
             case CFunction function:
+                ClearLocationForTypeInfo(function.ReturnTypeInfo);
+                foreach (var parameter in function.Parameters)
+                {
+                    parameter.Location = null;
+                    ClearLocationForTypeInfo(parameter.TypeInfo);
+                }
+
                 _functions.Add(function);
                 break;
             case CRecord record:
+                foreach (var field in record.Fields)
+                {
+                    field.Location = null;
+                    ClearLocationForTypeInfo(field.TypeInfo);
+                }
+
                 _records.Add(record);
                 break;
             case CFunctionPointer functionPointer:
+                ClearLocationForTypeInfo(functionPointer.ReturnTypeInfo);
+                foreach (var parameter in functionPointer.Parameters)
+                {
+                    ClearLocationForTypeInfo(parameter.TypeInfo);
+                }
+
                 _functionPointers.Add(functionPointer);
                 break;
             case CMacroObject macroObject:
+                ClearLocationForTypeInfo(macroObject.TypeInfo);
                 _macroObjects.Add(macroObject);
                 break;
             case CTypeAlias typeAlias:
+                ClearLocationForTypeInfo(typeAlias.UnderlyingTypeInfo);
                 _typeAliases.Add(typeAlias);
                 break;
             case CEnumConstant enumConstant:
+                ClearLocationForTypeInfo(enumConstant.TypeInfo);
                 _enumConstants.Add(enumConstant);
                 break;
             default:
                 throw new NotImplementedException($"Unknown node type '{node.GetType()}'");
+        }
+    }
+
+    private void ClearLocationForTypeInfo(CTypeInfo typeInfo)
+    {
+        var currentTypeInfo = typeInfo;
+        while (currentTypeInfo != null)
+        {
+            currentTypeInfo.Location = null;
+            currentTypeInfo = currentTypeInfo.InnerTypeInfo;
         }
     }
 
@@ -133,6 +167,12 @@ public sealed partial class MergeAbstractSyntaxTreesTool
     {
         if (nodes.Length != platforms.Length)
         {
+            if (nodes[0].Node.Kind == CKind.MacroObject)
+            {
+                // Macro object is likely defined in one platform but not others
+                return;
+            }
+
             var nodePlatforms = nodes.Select(x => x.TargetPlatform);
             var missingNodePlatforms = platforms.Except(nodePlatforms);
             var missingNodePlatformsString = string.Join(", ", missingNodePlatforms);
@@ -154,6 +194,7 @@ public sealed partial class MergeAbstractSyntaxTreesTool
 
             if (!node.Equals(firstNode))
             {
+                var x = node.Equals(firstNode);
                 LogNodeNotEqual(nodeName);
                 areAllEqual = false;
                 break;
@@ -166,7 +207,7 @@ public sealed partial class MergeAbstractSyntaxTreesTool
         }
     }
 
-    private ImmutableDictionary<string, ImmutableArray<CNodeWithTargetPlatform>> GetPlatformNodesByName(
+    private ImmutableSortedDictionary<string, ImmutableArray<CNodeWithTargetPlatform>> GetPlatformNodesByName(
         ImmutableArray<CAbstractSyntaxTreeTargetPlatform> platformAbstractSyntaxTrees)
     {
         var platformNodesByName = new Dictionary<string, List<CNodeWithTargetPlatform>>();
@@ -177,7 +218,7 @@ public sealed partial class MergeAbstractSyntaxTreesTool
         }
 
         var result = platformNodesByName.
-            ToImmutableDictionary(
+            ToImmutableSortedDictionary(
                 x => x.Key,
                 y => y.Value.ToImmutableArray());
         return result;

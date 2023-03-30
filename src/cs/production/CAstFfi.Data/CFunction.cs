@@ -32,9 +32,11 @@ public class CFunction : CNodeWithLocation
             return false;
         }
 
-        return CallingConvention == other2.CallingConvention &&
+        var parametersAreEqual = Parameters.SequenceEqual(other2.Parameters);
+        var result = CallingConvention == other2.CallingConvention &&
                ReturnTypeInfo.Equals(other2.ReturnTypeInfo) &&
-               Parameters.SequenceEqual(other2.Parameters);
+               parametersAreEqual;
+        return result;
     }
 
     public override int GetHashCode()

@@ -34,16 +34,16 @@ public abstract partial class ExploreHandler
 
     internal CNode? ExploreInternal(ExploreContext context, ExploreInfoNode info)
     {
-        LogExploring(info.Kind, info.Name, info.Location);
+        LogExploring(info.Kind, info.Name, info.Location!.Value);
         var result = Explore(context, info);
 
         if (result == null)
         {
-            LogExplored(info.Kind, info.Name, info.Location);
+            LogExplored(info.Kind, info.Name, info.Location!.Value);
             return null;
         }
 
-        LogSkipped(info.Kind, info.Name, info.Location);
+        LogSkipped(info.Kind, info.Name, info.Location!.Value);
         return result;
     }
 
@@ -118,7 +118,7 @@ public abstract partial class ExploreHandler
     {
         try
         {
-            _visitedNames.Add(info.Name, info.Location);
+            _visitedNames.Add(info.Name, info.Location!.Value);
         }
         catch (Exception e)
         {

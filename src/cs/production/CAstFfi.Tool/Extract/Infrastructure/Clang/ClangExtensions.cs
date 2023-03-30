@@ -318,7 +318,7 @@ public static unsafe class ClangExtensions
         return isConstQualifiedType;
     }
 
-    public static CLocation GetLocation(
+    public static CLocation? GetLocation(
         this CXCursor cursor,
         CXType? type = null,
         ImmutableDictionary<string, string>? linkedFileDirectoryPaths = null,
@@ -326,7 +326,7 @@ public static unsafe class ClangExtensions
     {
         if (cursor.kind == CXCursorKind.CXCursor_TranslationUnit)
         {
-            return CLocation.NoLocation;
+            return null;
         }
 
         if (cursor.kind != CXCursorKind.CXCursor_FieldDecl && type != null)
@@ -334,7 +334,7 @@ public static unsafe class ClangExtensions
             if (cursor.kind != CXCursorKind.CXCursor_FunctionDecl &&
                 type.Value.kind is CXTypeKind.CXType_FunctionProto or CXTypeKind.CXType_FunctionNoProto)
             {
-                return CLocation.NoLocation;
+                return null;
             }
 
             if (type.Value.kind is
@@ -342,12 +342,12 @@ public static unsafe class ClangExtensions
                 CXTypeKind.CXType_ConstantArray or
                 CXTypeKind.CXType_IncompleteArray)
             {
-                return CLocation.NoLocation;
+                return null;
             }
 
             if (type.Value.IsPrimitive())
             {
-                return CLocation.NoLocation;
+                return null;
             }
         }
 
@@ -459,7 +459,7 @@ public static unsafe class ClangExtensions
         return result;
     }
 
-    private static CLocation GetLocation(
+    private static CLocation? GetLocation(
         CXSourceLocation locationSource,
         CXTranslationUnit? translationUnit = null,
         ImmutableDictionary<string, string>? linkedFileDirectoryPaths = null,
@@ -477,7 +477,7 @@ public static unsafe class ClangExtensions
         {
             if (!translationUnit.HasValue)
             {
-                return CLocation.NoLocation;
+                return null;
             }
 
             return LocationInTranslationUnit(translationUnit.Value, (int)lineNumber, (int)columnNumber);

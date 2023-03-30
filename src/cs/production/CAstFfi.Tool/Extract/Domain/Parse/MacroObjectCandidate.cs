@@ -10,7 +10,7 @@ public class MacroObjectCandidate
 {
     public string Name { get; init; } = string.Empty;
 
-    public CLocation Location { get; init; } = CLocation.NoLocation;
+    public CLocation? Location { get; init; }
 
     public ImmutableArray<string> Tokens { get; init; } = ImmutableArray<string>.Empty;
 }

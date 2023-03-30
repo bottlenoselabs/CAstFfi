@@ -9,13 +9,6 @@ namespace CAstFfi.Data;
 
 public record struct CLocation : IComparable<CLocation>
 {
-#pragma warning disable CA2211
-    public static CLocation NoLocation = new()
-    {
-        IsNull = true
-    };
-#pragma warning restore CA2211
-
     [JsonPropertyName("fileName")]
     public string FileName { get; set; }
 
@@ -30,9 +23,6 @@ public record struct CLocation : IComparable<CLocation>
 
     [JsonPropertyName("column")]
     public int LineColumn { get; set; }
-
-    [JsonIgnore]
-    public bool IsNull { get; set; }
 
     public int CompareTo(CLocation other)
     {
@@ -59,13 +49,6 @@ public record struct CLocation : IComparable<CLocation>
 
     public override string ToString()
     {
-#pragma warning disable CA1308
-        if (IsNull)
-        {
-            return string.Empty;
-        }
-#pragma warning restore CA1308
-
         if (LineNumber == 0 && LineColumn == 0)
         {
             return $"{FileName}";

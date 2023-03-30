@@ -241,7 +241,7 @@ public sealed partial class Parser
         ImmutableArray<string> userIncludeDirectories)
     {
         var location = cursor.GetLocation(includeDirectories: userIncludeDirectories);
-        var locationCommentLineNumber = location.LineNumber - 1;
+        var locationCommentLineNumber = location!.Value.LineNumber - 1;
 
         if (readerLineNumber > locationCommentLineNumber)
         {
@@ -376,7 +376,7 @@ public sealed partial class Parser
 
         foreach (var macroObject in macroObjectCandidates)
         {
-            var includeHeaderFilePath = macroObject.Location.FullFilePath;
+            var includeHeaderFilePath = macroObject.Location!.Value.FullFilePath;
             if (includeHeaderFilePaths.Contains(includeHeaderFilePath))
             {
                 continue;

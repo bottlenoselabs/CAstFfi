@@ -2,15 +2,13 @@
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
 using System.Text.Json.Serialization;
-using CAstFfi.Data.Serialization;
 
 namespace CAstFfi.Data;
 
 public abstract class CNodeWithLocation : CNode
 {
     [JsonPropertyName("location")]
-    [JsonConverter(typeof(CLocationJsonConverter))]
-    public CLocation Location { get; set; }
+    public CLocation? Location { get; set; }
 
     protected override int CompareToInternal(CNode? other)
     {
@@ -19,6 +17,16 @@ public abstract class CNodeWithLocation : CNode
             return base.CompareToInternal(other);
         }
 
-        return Location.CompareTo(other2.Location);
+        if (Location is null && other2.Location is not null)
+        {
+            return 1;
+        }
+
+        if (Location is not null && other2.Location is null)
+        {
+            return -1;
+        }
+
+        return Location!.Value.CompareTo(other2.Location!.Value);
     }
 }
