@@ -17,6 +17,11 @@ public abstract class CNodeWithLocation : CNode
             return base.CompareToInternal(other);
         }
 
+        if (Location is null && other2.Location is null)
+        {
+            return 0;
+        }
+
         if (Location is null && other2.Location is not null)
         {
             return 1;
