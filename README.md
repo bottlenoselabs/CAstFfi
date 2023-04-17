@@ -197,7 +197,9 @@ Note that pointers such as `void*` can have different sizes across target comput
 dotnet tool install bottlenoselabs.castffi.tool -g
 ```
 
-### Usage
+### Usage `extract`
+
+Extract the platform specific abstract syntax tree `.json` files.
 
 #### Windows
 
@@ -261,3 +263,17 @@ Terminal:
 ```bash
 castffi extract path/to/config_linux.json
 ```
+
+### Usage `merge`
+
+Once one or more platform abstract syntax tree `.json` files have been extracted, merge them together into a cross-platform abstract syntax tree.
+
+Terminal:
+```bash
+castffi castffi merge --inputDirectoryPath  /path/to/platform/ast --outputFilePath /path/to/cross-platform-ast.json
+```
+
+
+
+
+
