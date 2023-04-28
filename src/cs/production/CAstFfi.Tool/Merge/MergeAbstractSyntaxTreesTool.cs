@@ -167,12 +167,6 @@ public sealed partial class MergeAbstractSyntaxTreesTool
     {
         if (nodes.Length != platforms.Length)
         {
-            if (nodes[0].Node.Kind == CKind.MacroObject)
-            {
-                // Macro object is likely defined in one platform but not others
-                return;
-            }
-
             var nodePlatforms = nodes.Select(x => x.TargetPlatform);
             var missingNodePlatforms = platforms.Except(nodePlatforms);
             var missingNodePlatformsString = string.Join(", ", missingNodePlatforms);
@@ -194,7 +188,14 @@ public sealed partial class MergeAbstractSyntaxTreesTool
 
             if (!node.Equals(firstNode))
             {
-                var x = node.Equals(firstNode);
+                if (node is CMacroObject nodeMacroObject && firstNode is CMacroObject firstNodeMacroObject)
+                {
+                    if (nodeMacroObject.EqualsWithoutValue(firstNodeMacroObject))
+                    {
+                        continue;
+                    }
+                }
+
                 LogNodeNotEqual(nodeName);
                 areAllEqual = false;
                 break;
