@@ -70,6 +70,8 @@ public sealed partial class Explorer
             TryEnqueueVisitInfoNode,
             linkedPaths);
 
+        var platformScope = _logger.BeginScope(targetPlatform)!;
+
         try
         {
             VisitTranslationUnit(context, translationUnit, headerFilePath);
@@ -87,6 +89,8 @@ public sealed partial class Explorer
 
         CleanUp(context);
         LogSuccess();
+
+        platformScope.Dispose();
         return result;
     }
 
