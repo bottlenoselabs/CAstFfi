@@ -233,7 +233,9 @@ public sealed partial class ClangArgumentsBuilder
         }
 
         directories.AddRange(manualSystemIncludeDirectories);
-        return directories.ToImmutable();
+
+        var result = directories.Distinct().ToImmutableArray();
+        return result;
     }
 
     private void SystemIncludeDirectoriesHostWindows(
