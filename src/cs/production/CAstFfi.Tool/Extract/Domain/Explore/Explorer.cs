@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.Text;
+using CAstFfi.Common;
 using CAstFfi.Data;
 using CAstFfi.Extract.Domain.Explore.Handlers;
 using CAstFfi.Extract.Domain.Parse;
@@ -207,7 +208,7 @@ public sealed partial class Explorer
         LogExploringMacros();
         var macroObjectCandidates = _macroObjectCandidates.ToImmutableArray();
         var macroObjects = _parser.MacroObjects(
-            macroObjectCandidates, context.TargetPlatformRequested, context.ParseOptions);
+            macroObjectCandidates, NativeUtility.HostPlatform, context.ParseOptions);
         var macroNamesFound = macroObjects.Select(macroObject => macroObject.Name).ToArray();
         var macroNamesFoundString = string.Join(", ", macroNamesFound);
         LogFoundMacros(macroNamesFound.Length, macroNamesFoundString);
