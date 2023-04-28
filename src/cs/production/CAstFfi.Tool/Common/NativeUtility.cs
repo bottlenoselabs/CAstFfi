@@ -79,11 +79,11 @@ public static class NativeUtility
             return operatingSystem switch
             {
                 NativeOperatingSystem.Windows when architecture == NativeArchitecture.X64 => CTargetPlatform
-                    .x86_64_pc_windows_gnu,
+                    .x86_64_pc_windows_msvc,
                 NativeOperatingSystem.Windows when architecture == NativeArchitecture.X86 => CTargetPlatform
-                    .i686_pc_windows_gnu,
+                    .i686_pc_windows_msvc,
                 NativeOperatingSystem.Windows when architecture == NativeArchitecture.ARM64 => CTargetPlatform
-                    .aarch64_pc_windows_gnu,
+                    .aarch64_pc_windows_msvc,
                 NativeOperatingSystem.macOS when architecture == NativeArchitecture.ARM64 => CTargetPlatform
                     .aarch64_apple_darwin,
                 NativeOperatingSystem.macOS when architecture == NativeArchitecture.X64 => CTargetPlatform
