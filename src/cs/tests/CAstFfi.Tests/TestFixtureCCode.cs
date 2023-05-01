@@ -78,6 +78,7 @@ public sealed class TestFixtureCCode : IDisposable
         var macroObjects = CreateTestMacroObjects(ast);
         var typeAliases = CreateTestTypeAliases(ast);
         var functionPointers = CreateTestFunctionPointers(ast);
+        var opaqueDataTypes = CreateTestOpaqueTypes(ast);
 
         var data = new TestCCodeAbstractSyntaxTree(
             ast.PlatformRequested,
@@ -87,7 +88,8 @@ public sealed class TestFixtureCCode : IDisposable
             structs,
             macroObjects,
             typeAliases,
-            functionPointers);
+            functionPointers,
+            opaqueDataTypes);
         return data;
     }
 
@@ -349,6 +351,31 @@ public sealed class TestFixtureCCode : IDisposable
         {
             Name = value.Name,
             TypeName = value.TypeInfo.Name
+        };
+
+        return result;
+    }
+
+    private static ImmutableDictionary<string, CTestOpaqueType> CreateTestOpaqueTypes(
+        CAbstractSyntaxTreeTargetPlatform ast)
+    {
+        var builder = ImmutableDictionary.CreateBuilder<string, CTestOpaqueType>();
+
+        foreach (var value in ast.OpaqueTypes.Values)
+        {
+            var result = CreateTestOpaqueType(value);
+            builder.Add(result.Name, result);
+        }
+
+        return builder.ToImmutable();
+    }
+
+    private static CTestOpaqueType CreateTestOpaqueType(COpaqueType value)
+    {
+        var result = new CTestOpaqueType
+        {
+            Name = value.Name,
+            SizeOf = value.SizeOf
         };
 
         return result;

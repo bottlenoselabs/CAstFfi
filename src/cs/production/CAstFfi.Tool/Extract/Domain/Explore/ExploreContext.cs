@@ -71,7 +71,7 @@ public sealed class ExploreContext
         var cursor = clang_getTypeDeclaration(type);
         var typeName = TypeName(kind, type, rootInfo?.Name, fieldIndex);
 
-        var typeInfo = VisitTypeInternal(kind, rootInfo?.Kind, typeName, rootInfo?.TypeName, type, typeCandidate, cursor, rootInfo, null);
+        var typeInfo = VisitTypeInternal(kind, typeName, type, typeCandidate, cursor, rootInfo, null);
 
         return typeInfo;
     }
@@ -412,9 +412,7 @@ extend                        = 0x40
 
     private CTypeInfo? VisitTypeInternal(
         CKind kind,
-        CKind? parentKind,
         string typeName,
-        string? parentTypeName,
         CXType type,
         CXType containerType,
         CXCursor cursor,
@@ -427,14 +425,17 @@ extend                        = 0x40
             var typeCandidateCursor = clang_getTypeDeclaration(typeCandidate);
             return VisitTypeInternal(
                 kind,
-                parentKind,
                 typeName,
-                parentTypeName,
                 typeCandidate,
                 containerType,
                 typeCandidateCursor,
                 rootNode,
                 parentIsFromBlockedHeader);
+        }
+
+        if (ExploreOptions.OpaqueTypeNames.Contains(typeName))
+        {
+            kind = CKind.OpaqueType;
         }
 
         var locationCursor = clang_getTypeDeclaration(type);
@@ -468,9 +469,7 @@ extend                        = 0x40
 
             innerType = VisitTypeInternal(
                 pointeeTypeKind,
-                kind,
                 pointeeTypeName,
-                parentTypeName,
                 pointeeType,
                 pointeeTypeCandidate,
                 pointeeTypeCursor,
@@ -488,9 +487,7 @@ extend                        = 0x40
 
             innerType = VisitTypeInternal(
                 elementTypeKind,
-                kind,
                 elementTypeName,
-                typeName,
                 elementType,
                 elementTypeCandidate,
                 elementTypeCursor,
@@ -508,9 +505,7 @@ extend                        = 0x40
 
             innerType = VisitTypeInternal(
                 aliasTypeKind,
-                kind,
                 aliasTypeName,
-                typeName,
                 aliasType,
                 aliasTypeCandidate,
                 aliasTypeCursor,

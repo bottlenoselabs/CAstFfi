@@ -124,6 +124,7 @@ public sealed class ExtractInputSanitizer
             {
                 IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
                 IsEnabledOnlyExternalTopLevelCursors = options.IsEnabledOnlyExternalTopLevelCursors ?? true,
+                OpaqueTypeNames = VerifyImmutableArray(options.OpaqueTypeNames).ToImmutableHashSet()
             },
             ParseOptions = new ExtractParseOptions
             {

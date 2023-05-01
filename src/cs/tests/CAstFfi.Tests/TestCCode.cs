@@ -12,7 +12,7 @@ namespace CAstFfi.Tests;
 [PublicAPI]
 public class TestCCode : TestBase
 {
-    public static TheoryData<string> Enums() => new()
+    public static TheoryData<string> EnumNames() => new()
     {
         "Enum_Force_SInt8",
         "Enum_Force_SInt16",
@@ -23,9 +23,14 @@ public class TestCCode : TestBase
         "Enum_Force_UInt32"
     };
 
-    public static TheoryData<string> NamedFunctionPointers() => new()
+    public static TheoryData<string> FunctionPointerNames() => new()
     {
         "TypeDef_FunctionPointer_ReturnVoid_ArgsVoid",
+    };
+
+    public static TheoryData<string> OpaqueTypesNames() => new()
+    {
+        "OpaqueType_PlatformSpecificSize",
     };
 
     [Fact]
@@ -35,7 +40,7 @@ public class TestCCode : TestBase
     }
 
     [Theory]
-    [MemberData(nameof(Enums))]
+    [MemberData(nameof(EnumNames))]
     public void Enum(string name)
     {
         foreach (var ast in _fixture.AbstractSyntaxTrees)
@@ -46,8 +51,8 @@ public class TestCCode : TestBase
     }
 
     [Theory]
-    [MemberData(nameof(NamedFunctionPointers))]
-    public void NamedFunctionPointer(string name)
+    [MemberData(nameof(FunctionPointerNames))]
+    public void FunctionPointers(string name)
     {
         foreach (var ast in _fixture.AbstractSyntaxTrees)
         {
@@ -59,6 +64,17 @@ public class TestCCode : TestBase
                 .Replace("*", "+", StringComparison.InvariantCulture)
                 .Replace(" ", string.Empty, StringComparison.InvariantCulture);
             AssertValue(typeAliasFileName, functionPointer, $"{ast.TargetPlatformRequested}/FunctionPointers");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(OpaqueTypesNames))]
+    public void OpaqueTypes(string name)
+    {
+        foreach (var ast in _fixture.AbstractSyntaxTrees)
+        {
+            var opaqueType = ast.GetOpaqueType(name);
+            AssertValue(name, opaqueType, $"{ast.TargetPlatformRequested}/OpaqueTypes");
         }
     }
 
