@@ -115,6 +115,12 @@ public sealed class UnsanitizedExtractOptions
     public bool? IsEnabledOnlyExternalTopLevelCursors { get; set; }
 
     /// <summary>
+    ///     The cursor names to be treated as opaque types.
+    /// </summary>
+    [JsonPropertyName("opaqueTypeNames")]
+    public ImmutableArray<string>? OpaqueTypeNames { get; set; }
+
+    /// <summary>
     ///     The target platform configurations for extracting the abstract syntax trees.
     /// </summary>
     [JsonPropertyName("platforms")]

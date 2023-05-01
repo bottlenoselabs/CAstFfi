@@ -19,6 +19,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     private readonly ImmutableDictionary<string, CTestRecord> _records;
     private readonly ImmutableDictionary<string, CTestTypeAlias> _typeAliases;
     private readonly ImmutableDictionary<string, CTestFunctionPointer> _functionPointers;
+    private readonly ImmutableDictionary<string, CTestOpaqueType> _opaqueTypes;
 
     private readonly ImmutableHashSet<string>.Builder _namesTested;
 
@@ -34,7 +35,8 @@ public sealed class TestCCodeAbstractSyntaxTree
         ImmutableDictionary<string, CTestRecord> records,
         ImmutableDictionary<string, CTestMacroObject> macroObjects,
         ImmutableDictionary<string, CTestTypeAlias> typeAliases,
-        ImmutableDictionary<string, CTestFunctionPointer> functionPointers)
+        ImmutableDictionary<string, CTestFunctionPointer> functionPointers,
+        ImmutableDictionary<string, CTestOpaqueType> opaqueTypes)
     {
         TargetPlatformRequested = targetPlatformRequested.ToString();
         TargetPlatformActual = targetPlatformActual.ToString();
@@ -45,6 +47,7 @@ public sealed class TestCCodeAbstractSyntaxTree
         _macroObjects = macroObjects;
         _typeAliases = typeAliases;
         _functionPointers = functionPointers;
+        _opaqueTypes = opaqueTypes;
         _namesTested = ImmutableHashSet.CreateBuilder<string>();
 
         AssertPInvokePlatformNameFunction();
@@ -54,34 +57,34 @@ public sealed class TestCCodeAbstractSyntaxTree
     {
         foreach (var value in _enums.Values)
         {
-            Assert.True(_namesTested.Contains(value.Name), $"The C enum `{value.Name}` is not covered in a test!");
+            Assert.True(_namesTested.Contains(value.Name), $"The C enum '{value.Name}' is not covered in a test!");
         }
 
         foreach (var value in _records.Values)
         {
-            Assert.True(_namesTested.Contains(value.Name), $"The C record `{value.Name}` is not covered in a test!");
+            Assert.True(_namesTested.Contains(value.Name), $"The C record '{value.Name}' is not covered in a test!");
         }
 
         foreach (var value in _macroObjects.Values)
         {
-            Assert.True(_namesTested.Contains(value.Name), $"The C macro object `{value.Name}` is not covered in a test!");
+            Assert.True(_namesTested.Contains(value.Name), $"The C macro object '{value.Name}' is not covered in a test!");
         }
 
         foreach (var value in _typeAliases.Values)
         {
-            Assert.True(_namesTested.Contains(value.Name), $"The C type alias `{value.Name}` is not covered in a test!");
+            Assert.True(_namesTested.Contains(value.Name), $"The C type alias '{value.Name}' is not covered in a test!");
         }
 
         foreach (var value in _functionPointers.Values)
         {
-            Assert.True(_namesTested.Contains(value.Name), $"The C function pointer `{value.Name}` is not covered in a test!");
+            Assert.True(_namesTested.Contains(value.Name), $"The C function pointer '{value.Name}' is not covered in a test!");
         }
     }
 
     public CTestFunction GetFunction(string name)
     {
         var exists = _functions.TryGetValue(name, out var value);
-        Assert.True(exists, $"The function `{name}` does not exist.");
+        Assert.True(exists, $"The function '{name}' does not exist.");
         _namesTested.Add(name);
         return value!;
     }
@@ -101,7 +104,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestEnum GetEnum(string name)
     {
         var exists = _enums.TryGetValue(name, out var value);
-        Assert.True(exists, $"The enum `{name}` does not exist: {TargetPlatformRequested}");
+        Assert.True(exists, $"The enum '{name}' does not exist: {TargetPlatformRequested}");
         _namesTested.Add(name);
         return value!;
     }
@@ -121,7 +124,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestRecord GetRecord(string name)
     {
         var exists = _records.TryGetValue(name, out var value);
-        Assert.True(exists, $"The record `{name}` does not exist: {TargetPlatformRequested}");
+        Assert.True(exists, $"The record '{name}' does not exist: {TargetPlatformRequested}");
         _namesTested.Add(name);
         AssertRecord(value!);
         return value!;
@@ -143,7 +146,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestMacroObject GetMacroObject(string name)
     {
         var exists = _macroObjects.TryGetValue(name, out var value);
-        Assert.True(exists, $"The macro object `{name}` does not exist: {TargetPlatformRequested}");
+        Assert.True(exists, $"The macro object '{name}' does not exist: {TargetPlatformRequested}");
         _namesTested.Add(name);
         return value!;
     }
@@ -163,7 +166,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestTypeAlias GetTypeAlias(string name)
     {
         var exists = _typeAliases.TryGetValue(name, out var value);
-        Assert.True(exists, $"The type alias `{name}` does not exist: {TargetPlatformRequested}");
+        Assert.True(exists, $"The type alias '{name}' does not exist: {TargetPlatformRequested}");
         _namesTested.Add(name);
         return value!;
     }
@@ -183,7 +186,7 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestFunctionPointer GetFunctionPointer(string name)
     {
         var exists = _functionPointers.TryGetValue(name, out var value);
-        Assert.True(exists, $"The function pointer `{name}` does not exist: {TargetPlatformRequested}");
+        Assert.True(exists, $"The function pointer '{name}' does not exist: {TargetPlatformRequested}");
         _namesTested.Add(name);
         return value!;
     }
@@ -191,6 +194,20 @@ public sealed class TestCCodeAbstractSyntaxTree
     public CTestFunctionPointer? TryGetFunctionPointer(string name)
     {
         var exists = _functionPointers.TryGetValue(name, out var value);
+        return exists ? value : null;
+    }
+
+    public CTestOpaqueType GetOpaqueType(string name)
+    {
+        var exists = _opaqueTypes.TryGetValue(name, out var value);
+        Assert.True(exists, $"The opaque type '{name}' does not exist: {TargetPlatformRequested}");
+        _namesTested.Add(name);
+        return value!;
+    }
+
+    public CTestOpaqueType? TryGetOpaqueType(string name)
+    {
+        var exists = _opaqueTypes.TryGetValue(name, out var value);
         return exists ? value : null;
     }
 
@@ -205,11 +222,11 @@ public sealed class TestCCodeAbstractSyntaxTree
 
         Assert.True(
             record.AlignOf > 0,
-            $"C record `{record.Name} does not have an alignment of which is positive.");
+            $"C record '{record.Name}' does not have an alignment of which is positive.");
 
         Assert.True(
             record.SizeOf >= 0,
-            $"C record `{record.SizeOf} does not have an size of of which is positive or zero.");
+            $"C record '{record.Name}' does not have an size of of which is positive or zero.");
     }
 
     private void AssertRecordField(CTestRecord record, CTestRecordField field, List<string> namesLookup)
@@ -218,24 +235,24 @@ public sealed class TestCCodeAbstractSyntaxTree
 
         Assert.False(
             namesLookup.Contains(field.Name),
-            $"C {recordKindName} `{record.Name}` already has a field named `{field.Name}`.");
+            $"C {recordKindName} '{record.Name}' already has a field named `{field.Name}`.");
         namesLookup.Add(field.Name);
 
         Assert.True(
             field.OffsetOf >= 0,
-            $"C {recordKindName} `{record.Name} field `{field.Name}` does not have an offset of which is positive or zero.");
+            $"C {recordKindName} '{record.Name}' field '{field.Name}' does not have an offset of which is positive or zero.");
         Assert.True(
             field.SizeOf > 0,
-            $"C {recordKindName} `{record.Name} field `{field.Name}` does not have a size of which is positive.");
+            $"C {recordKindName} '{record.Name}' field '{field.Name}' does not have a size of which is positive.");
 
         if (record.IsUnion)
         {
             Assert.True(
                 field.OffsetOf == 0,
-                $"C union `{record.Name} field `{field.Name}` does not have an offset of zero.");
+                $"C union '{record.Name}' field '{field.Name}' does not have an offset of zero.");
             Assert.True(
                 field.SizeOf == record.SizeOf,
-                $"C union `{record.Name} field `{field.Name}` does not have a size that matches the union.");
+                $"C union '{record.Name}' field '{field.Name}' does not have a size that matches the union.");
         }
     }
 

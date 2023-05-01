@@ -537,6 +537,11 @@ public sealed partial class Explorer
         }
 
         var name = clang_getCursorSpelling(cursor).String();
+        if (context.ExploreOptions.OpaqueTypeNames.Contains(name))
+        {
+            kind = CKind.OpaqueType;
+        }
+
         var isAnonymous = clang_Cursor_isAnonymous(cursor) > 0;
         var info = context.CreateVisitInfoNode(kind, name, cursor, type, null);
 

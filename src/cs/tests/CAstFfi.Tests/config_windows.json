@@ -3,6 +3,9 @@
   "userIncludeDirectories": [
     "../../../../src/c/production/ffi_helper/include"
     ],
+  "opaqueTypeNames": [
+    "OpaqueType_PlatformSpecificSize"
+  ],
   "platforms": {
     "i686-pc-windows-msvc": {},
     "x86_64-pc-windows-msvc": {},

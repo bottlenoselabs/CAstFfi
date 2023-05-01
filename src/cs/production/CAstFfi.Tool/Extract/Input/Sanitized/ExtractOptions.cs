@@ -9,5 +9,5 @@ public sealed class ExtractOptions
 {
     public string InputFilePath { get; init; } = string.Empty;
 
-    public ImmutableArray<ExtractAbstractSyntaxTreeOptions> AbstractSyntaxTreeOptions { get; set; }
+    public ImmutableArray<ExtractAbstractSyntaxTreeOptions> AbstractSyntaxTreeOptions { get; init; }
 }
