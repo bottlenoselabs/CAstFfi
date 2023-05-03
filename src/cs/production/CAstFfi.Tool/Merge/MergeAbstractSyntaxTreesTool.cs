@@ -27,8 +27,8 @@ public sealed partial class MergeAbstractSyntaxTreesTool
 
     private sealed class CNodeWithTargetPlatform
     {
-        public CNode Node;
-        public CTargetPlatform TargetPlatform;
+        public readonly CNode Node;
+        public readonly CTargetPlatform TargetPlatform;
 
         public CNodeWithTargetPlatform(CNode node, CTargetPlatform targetPlatform)
         {
@@ -192,7 +192,8 @@ public sealed partial class MergeAbstractSyntaxTreesTool
                 {
                     if (nodeMacroObject.EqualsWithoutValue(firstNodeMacroObject))
                     {
-                        continue;
+                        areAllEqual = false;
+                        break;
                     }
                 }
 
@@ -337,9 +338,8 @@ public sealed partial class MergeAbstractSyntaxTreesTool
         return builder.ToImmutable();
     }
 
-    [LoggerMessage(0, LogLevel.Error, "The node '{NodeName}' is not cross-platform; there is no matching node for platforms: {MissingPlatformNames}")]
-    private partial void LogNodeNotCrossPlatform(string nodeName,
-        string missingPlatformNames);
+    [LoggerMessage(0, LogLevel.Warning, "The node '{NodeName}' is not cross-platform; there is no matching node for platforms: {MissingPlatformNames}")]
+    private partial void LogNodeNotCrossPlatform(string nodeName, string missingPlatformNames);
 
     [LoggerMessage(1, LogLevel.Error, "The node '{NodeName}' of kind '{NodeActualKind}' for platform '{NodePlatform}' does not match the kind '{nodeExpectedKind}' for platform {NodePlatformExpectedKind}.")]
     private partial void LogNodeNotSameKind(string nodeName, string nodeActualKind, string nodePlatform, string nodeExpectedKind, string nodePlatformExpectedKind);
