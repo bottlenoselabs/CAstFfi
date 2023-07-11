@@ -1,6 +1,6 @@
 # CAstFfi
 
-Convert a cross-platform C header `.h` to to a FFI (foreign function interface) abstract syntax tree (AST) `.json` for the purposes of generating bindings to other languages.
+Convert a cross-platform C header `.h` to a FFI (foreign function interface) abstract syntax tree (AST) `.json` for the purposes of generating bindings to other languages.
 
 ## Background: Why?
 
