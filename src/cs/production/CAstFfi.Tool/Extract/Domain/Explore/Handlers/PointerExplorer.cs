@@ -32,11 +32,15 @@ public sealed class PointerExplorer : ExploreNodeHandler<CPointer>
         var typeInfo = context.VisitType(type, info)!;
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CPointer
         {
             Name = info.Name,
             TypeInfo = typeInfo,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

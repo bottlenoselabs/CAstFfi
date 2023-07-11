@@ -33,12 +33,16 @@ public class TypeAliasExplorer : ExploreNodeHandler<CTypeAlias>
         var aliasTypeInfo = context.VisitType(aliasType, info)!;
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var typedef = new CTypeAlias
         {
             Name = info.Name,
             Location = info.Location,
             UnderlyingTypeInfo = aliasTypeInfo,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
         return typedef;
     }

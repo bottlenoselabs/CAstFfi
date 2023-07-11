@@ -51,6 +51,9 @@ public sealed class FunctionExplorer : ExploreNodeHandler<CFunction>
 
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CFunction
         {
             Name = info.Name,
@@ -58,7 +61,8 @@ public sealed class FunctionExplorer : ExploreNodeHandler<CFunction>
             CallingConvention = callingConvention,
             ReturnTypeInfo = returnTypeInfo,
             Parameters = parameters.Value,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

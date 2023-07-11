@@ -4,6 +4,7 @@
 using CAstFfi.Extract.Domain.Explore;
 using CAstFfi.Extract.Domain.Explore.Handlers;
 using CAstFfi.Extract.Domain.Parse;
+using CAstFfi.Extract.Input;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CAstFfi.Extract;
@@ -12,6 +13,8 @@ public static class Startup
 {
     public static void ConfigureServices(IServiceCollection services)
     {
+        services.AddSingleton<ExtractInputSanitizer>();
+
         services.AddSingleton<ClangInstaller>();
         services.AddSingleton<ClangArgumentsBuilder>();
         services.AddSingleton<Parser>();

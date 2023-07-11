@@ -31,6 +31,9 @@ public sealed class UnionExplorer : RecordExplorer
         var fields = UnionFields(context, info.Type, info);
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CRecord
         {
             RecordKind = CRecordKind.Union,
@@ -39,7 +42,8 @@ public sealed class UnionExplorer : RecordExplorer
             Fields = fields,
             SizeOf = info.SizeOf,
             AlignOf = info.AlignOf!.Value,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

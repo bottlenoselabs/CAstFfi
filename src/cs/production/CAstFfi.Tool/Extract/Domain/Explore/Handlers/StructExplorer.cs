@@ -31,6 +31,9 @@ public sealed class StructExplorer : RecordExplorer
         var fields = StructFields(context, info);
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         try
         {
             var record = new CRecord
@@ -41,7 +44,8 @@ public sealed class StructExplorer : RecordExplorer
                 Fields = fields,
                 SizeOf = info.SizeOf,
                 AlignOf = info.AlignOf!.Value,
-                Comment = comment
+                Comment = comment,
+                IsSystem = isSystemCursor
             };
 
             return record;

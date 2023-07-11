@@ -34,6 +34,8 @@ public sealed class EnumExplorer : ExploreNodeHandler<CEnum>
         var integerTypeInfo = IntegerTypeInfo(context, info);
         var enumValues = CreateEnumValues(info.Cursor);
         var comment = context.Comment(info.Cursor);
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
 
         var result = new CEnum
         {
@@ -41,7 +43,8 @@ public sealed class EnumExplorer : ExploreNodeHandler<CEnum>
             Location = info.Location,
             IntegerTypeInfo = integerTypeInfo,
             Values = enumValues,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

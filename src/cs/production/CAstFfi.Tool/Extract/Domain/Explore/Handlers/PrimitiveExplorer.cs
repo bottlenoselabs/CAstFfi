@@ -53,11 +53,15 @@ public sealed class PrimitiveExplorer : ExploreNodeHandler<CPrimitive>
         var typeInfo = context.VisitType(info.Type, info)!;
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CPrimitive
         {
             Name = info.Name,
             TypeInfo = typeInfo,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
         return result;
     }

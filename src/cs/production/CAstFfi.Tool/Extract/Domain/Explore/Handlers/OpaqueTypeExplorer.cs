@@ -4,6 +4,7 @@
 using CAstFfi.Data;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using static bottlenoselabs.clang;
 
 namespace CAstFfi.Extract.Domain.Explore.Handlers;
 
@@ -29,12 +30,16 @@ public sealed class OpaqueTypeExplorer : ExploreNodeHandler<COpaqueType>
     {
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new COpaqueType
         {
             Name = info.Name,
             Location = info.Location,
             SizeOf = info.SizeOf,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

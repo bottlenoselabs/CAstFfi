@@ -47,6 +47,9 @@ public sealed class FunctionPointerExplorer : ExploreNodeHandler<CFunctionPointe
         var parameters = FunctionPointerParameters(context, info);
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CFunctionPointer
         {
             Name = info.Name,
@@ -54,7 +57,8 @@ public sealed class FunctionPointerExplorer : ExploreNodeHandler<CFunctionPointe
             TypeInfo = typeInfo,
             ReturnTypeInfo = returnTypeInfo,
             Parameters = parameters,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

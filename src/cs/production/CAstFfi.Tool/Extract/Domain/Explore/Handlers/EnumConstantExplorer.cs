@@ -34,13 +34,17 @@ public class EnumConstantExplorer : ExploreNodeHandler<CEnumConstant>
         var value = clang_getEnumConstantDeclValue(info.Cursor).ToString(CultureInfo.InvariantCulture);
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CEnumConstant
         {
             Name = info.Name,
             Location = info.Location ?? info.Parent!.Location,
             TypeInfo = typeInfo,
             Value = value,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
 
         return result;

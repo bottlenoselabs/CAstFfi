@@ -30,10 +30,14 @@ public sealed class ArrayExplorer : ExploreNodeHandler<CArray>
         var type = clang_getElementType(info.Type);
         var typeInfo = context.VisitType(type, info)!;
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CArray
         {
             Name = info.Name,
-            TypeInfo = typeInfo
+            TypeInfo = typeInfo,
+            IsSystem = isSystemCursor
         };
 
         return result;

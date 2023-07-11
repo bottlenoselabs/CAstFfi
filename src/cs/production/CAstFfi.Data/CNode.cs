@@ -11,6 +11,9 @@ public abstract class CNode : IComparable<CNode>, IEquatable<CNode>
     [JsonPropertyName("comment")]
     public string? Comment { get; set; }
 
+    [JsonPropertyName("isSystem")]
+    public bool IsSystem { get; set; }
+
     [JsonIgnore]
     public string Name { get; set; } = string.Empty;
 

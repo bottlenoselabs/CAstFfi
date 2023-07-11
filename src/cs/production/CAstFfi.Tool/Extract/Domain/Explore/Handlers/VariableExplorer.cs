@@ -31,12 +31,16 @@ public sealed class VariableExplorer : ExploreNodeHandler<CVariable>
     {
         var comment = context.Comment(info.Cursor);
 
+        var cursorLocation = clang_getCursorLocation(info.Cursor);
+        var isSystemCursor = clang_Location_isInSystemHeader(cursorLocation) > 0;
+
         var result = new CVariable
         {
             Location = info.Location,
             Name = info.Name,
             Type = info.TypeName,
-            Comment = comment
+            Comment = comment,
+            IsSystem = isSystemCursor
         };
         return result;
     }
