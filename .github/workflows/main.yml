@@ -7,6 +7,6 @@ on:
 
 jobs:
 
-  build-test-job:
-    name: "Build & teat"
-    uses: "./.github/workflows/build-test.yml"
+  test-job:
+    name: "Test"
+    uses: "./.github/workflows/test.yml"
