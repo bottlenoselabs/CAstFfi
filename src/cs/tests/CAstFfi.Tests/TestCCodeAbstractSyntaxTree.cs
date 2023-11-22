@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using bottlenoselabs.Common;
 using CAstFfi.Data;
 using CAstFfi.Tests.Data.Models;
 using JetBrains.Annotations;
@@ -28,8 +29,8 @@ public sealed class TestCCodeAbstractSyntaxTree
     public string TargetPlatformActual { get; }
 
     public TestCCodeAbstractSyntaxTree(
-        CTargetPlatform targetPlatformRequested,
-        CTargetPlatform targetPlatformActual,
+        TargetPlatform targetPlatformRequested,
+        TargetPlatform targetPlatformActual,
         ImmutableDictionary<string, CTestFunction> functions,
         ImmutableDictionary<string, CTestEnum> enums,
         ImmutableDictionary<string, CTestRecord> records,

@@ -2,7 +2,7 @@
 
 	<!-- MSBuild properties -->
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -25,6 +25,11 @@
 			<PackagePath>icon.png</PackagePath>
 			<Link>Properties/bottlenoselabs/icon.png</Link>
 		</Content>
+	</ItemGroup>
+
+	<!-- NuGet package references-->
+	<ItemGroup>
+	  <PackageReference Include="bottlenoselabs.Common" Version="2023.11.21" />
 	</ItemGroup>
 
 </Project>

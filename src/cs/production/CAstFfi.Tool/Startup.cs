@@ -6,8 +6,6 @@ using System.CommandLine;
 using System.IO.Abstractions;
 using System.Reflection;
 using System.Resources;
-using CAstFfi.Common;
-using CAstFfi.Extract.Input;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -81,7 +79,7 @@ public static class Startup
         services.AddHostedService<CommandLineHost>();
         services.AddSingleton<RootCommand, CommandLineInterface>();
 
-        Extract.Startup.ConfigureServices(services);
-        Merge.Startup.ConfigureServices(services);
+        Features.Extract.Startup.ConfigureServices(services);
+        Features.Merge.Startup.ConfigureServices(services);
     }
 }
