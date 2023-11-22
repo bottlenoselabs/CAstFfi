@@ -3,6 +3,7 @@
 
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using bottlenoselabs.Common;
 
 namespace CAstFfi.Data;
 
@@ -13,10 +14,10 @@ public record CAbstractSyntaxTreeTargetPlatform
     public string FileName { get; set; } = string.Empty;
 
     [JsonPropertyName("platformRequested")]
-    public CTargetPlatform PlatformRequested { get; set; } = CTargetPlatform.Unknown;
+    public TargetPlatform PlatformRequested { get; set; } = TargetPlatform.Unknown;
 
     [JsonPropertyName("platformActual")]
-    public CTargetPlatform PlatformActual { get; set; } = CTargetPlatform.Unknown;
+    public TargetPlatform PlatformActual { get; set; } = TargetPlatform.Unknown;
 
     [JsonPropertyName("macroObjects")]
     public ImmutableDictionary<string, CMacroObject> MacroObjects { get; set; } =

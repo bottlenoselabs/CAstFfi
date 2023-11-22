@@ -3,13 +3,14 @@
 
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
+using bottlenoselabs.Common;
 
 namespace CAstFfi.Data;
 
 public record CAbstractSyntaxTreeCrossPlatform
 {
     [JsonPropertyName("platforms")]
-    public ImmutableArray<CTargetPlatform> Platforms { get; set; } = ImmutableArray<CTargetPlatform>.Empty;
+    public ImmutableArray<TargetPlatform> Platforms { get; set; } = ImmutableArray<TargetPlatform>.Empty;
 
     [JsonPropertyName("macroObjects")]
     public ImmutableDictionary<string, CMacroObject> MacroObjects { get; set; } =

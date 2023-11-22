@@ -4,13 +4,10 @@
 using System;
 using System.Collections.Immutable;
 using System.IO;
-using CAstFfi.Common;
 using CAstFfi.Data;
-using CAstFfi.Data.Native;
 using CAstFfi.Data.Serialization;
-using CAstFfi.Extract;
+using CAstFfi.Features.Extract;
 using CAstFfi.Tests.Data.Models;
-using CAstFfi.Tests.Foundation;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -40,19 +37,19 @@ public sealed class TestFixtureCCode : IDisposable
 
     private ImmutableArray<TestCCodeAbstractSyntaxTree> GetAbstractSyntaxTrees()
     {
-        var configurationFileName = string.Empty;
-        configurationFileName = NativeUtility.HostOperatingSystem switch
-        {
-            NativeOperatingSystem.Windows => "config_windows.json",
-            NativeOperatingSystem.macOS => "config_macos.json",
-            NativeOperatingSystem.Linux => "config_linux.json",
-            _ => configurationFileName
-        };
+        const string configurationFileName = "config.json";
+        var gitRepositoryDirectoryPath = GetGitRepositoryDirectoryPath();
+        var sourceDirectoryPath = Path.Combine(
+            gitRepositoryDirectoryPath,
+            "src",
+            "cs",
+            "tests",
+            "CAstFfi.Tests");
 
-        var configurationFilePath = Path.Combine(AppContext.BaseDirectory, configurationFileName);
+        var configurationFilePath = Path.Combine(sourceDirectoryPath, configurationFileName);
         _tool.Run(configurationFilePath);
 
-        var abstractSyntaxTreesDirectory = Path.Combine(AppContext.BaseDirectory, "ast");
+        var abstractSyntaxTreesDirectory = Path.Combine(sourceDirectoryPath, "ast");
         var abstractSyntaxTreeFilePaths = Directory.EnumerateFiles(abstractSyntaxTreesDirectory);
 
         var builder = ImmutableArray.CreateBuilder<TestCCodeAbstractSyntaxTree>();
@@ -67,6 +64,26 @@ public sealed class TestFixtureCCode : IDisposable
         Assert.True(abstractSyntaxTrees.Length > 0, "Failed to read C code.");
 
         return abstractSyntaxTrees;
+    }
+
+    private static string GetGitRepositoryDirectoryPath()
+    {
+        var baseDirectory = AppContext.BaseDirectory;
+        var directoryInfo = new DirectoryInfo(baseDirectory);
+        while (true)
+        {
+            var files = directoryInfo.GetFiles(".gitignore", SearchOption.TopDirectoryOnly);
+            if (files.Length > 0)
+            {
+                return directoryInfo.FullName;
+            }
+
+            directoryInfo = directoryInfo.Parent;
+            if (directoryInfo == null)
+            {
+                return string.Empty;
+            }
+        }
     }
 
     private TestCCodeAbstractSyntaxTree GetAbstractSyntaxTree(string filePath)
