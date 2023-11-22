@@ -120,6 +120,11 @@ public sealed partial class Explorer
         clang_disposeTranslationUnit(context.TranslationUnit);
         _parser.CleanUp();
 
+        foreach (var handler in _handlers.Values)
+        {
+            handler.CleanUp();
+        }
+
         _frontierFunctions.Clear();
         _frontierTypes.Clear();
         _frontierVariables.Clear();

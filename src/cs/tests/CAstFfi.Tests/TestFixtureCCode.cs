@@ -47,7 +47,7 @@ public sealed class TestFixtureCCode : IDisposable
             "CAstFfi.Tests");
 
         var configurationFilePath = Path.Combine(sourceDirectoryPath, configurationFileName);
-        _tool.Run(configurationFilePath);
+        _tool.Run(configurationFilePath, string.Empty);
 
         var abstractSyntaxTreesDirectory = Path.Combine(sourceDirectoryPath, "ast");
         var abstractSyntaxTreeFilePaths = Directory.EnumerateFiles(abstractSyntaxTreesDirectory);
