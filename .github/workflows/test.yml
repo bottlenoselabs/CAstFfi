@@ -12,9 +12,9 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows x64, os: windows-latest }
-        - { name: Linux x64, os: ubuntu-latest }
-        - { name: macOS x64, os: macos-latest }
+        - { name: Windows, os: windows-latest }
+        - { name: Linux, os: ubuntu-latest }
+        - { name: macOS, os: macos-latest }
     defaults:
       run:
         shell: bash
