@@ -38,12 +38,14 @@
 
 	<!-- Copy data test files to output -->
 	<ItemGroup>
-		<None Update="Data\Values\**\*.json">
+		<None Include="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+	</ItemGroup>
+
+	<!-- Remove generated AST files -->
+	<ItemGroup>
+		<None Remove="ast\**\*.*" />
 	</ItemGroup>
 
 	<!-- Clang native library -->
@@ -52,9 +54,6 @@
 			<Link>%(Filename)%(Extension)</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-	  <None Include="Data\Values\**\*.*" />
 	</ItemGroup>
 
 </Project>

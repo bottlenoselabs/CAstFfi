@@ -46,6 +46,7 @@ public sealed class TestFixtureCCode : IDisposable
             "tests",
             "CAstFfi.Tests");
 
+        var x = Environment.CurrentDirectory;
         var configurationFilePath = Path.Combine(sourceDirectoryPath, configurationFileName);
         _tool.Run(configurationFilePath, string.Empty);
 

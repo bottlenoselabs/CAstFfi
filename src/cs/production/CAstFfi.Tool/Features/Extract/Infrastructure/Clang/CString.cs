@@ -214,7 +214,7 @@ public readonly unsafe struct CString : IEquatable<CString>
     }
 
     /// <summary>
-    ///     Returns a value that indicates whether two specified <see cref="CBool" /> structures are not equal.
+    ///     Returns a value that indicates whether two specified <see cref="CString" /> structures are not equal.
     /// </summary>
     /// <param name="left">The first <see cref="CString" /> to compare.</param>
     /// <param name="right">The second <see cref="CString" /> to compare.</param>

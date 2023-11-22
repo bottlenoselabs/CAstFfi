@@ -11,6 +11,12 @@ namespace CAstFfi.Tests;
 [PublicAPI]
 public class TestCCode : TestBase
 {
+    [Fact]
+    public void Reads()
+    {
+        Assert.True(_fixture.AbstractSyntaxTrees.Length != 0, "Failed to read C code.");
+    }
+
     public static TheoryData<string> EnumNames() => new()
     {
         "Enum_Force_SInt8",
@@ -21,22 +27,6 @@ public class TestCCode : TestBase
         "Enum_Force_UInt16",
         "Enum_Force_UInt32"
     };
-
-    public static TheoryData<string> FunctionPointerNames() => new()
-    {
-        "TypeDef_FunctionPointer_ReturnVoid_ArgsVoid",
-    };
-
-    public static TheoryData<string> OpaqueTypesNames() => new()
-    {
-        "OpaqueType_PlatformSpecificSize",
-    };
-
-    [Fact]
-    public void Reads()
-    {
-        Assert.True(_fixture.AbstractSyntaxTrees.Length != 0, "Failed to read C code.");
-    }
 
     [Theory]
     [MemberData(nameof(EnumNames))]
@@ -49,9 +39,14 @@ public class TestCCode : TestBase
         }
     }
 
+    public static TheoryData<string> FunctionPointerNames() => new()
+    {
+        "TypeDef_FunctionPointer_ReturnVoid_ArgsVoid",
+    };
+
     [Theory]
     [MemberData(nameof(FunctionPointerNames))]
-    public void FunctionPointers(string name)
+    public void FunctionPointer(string name)
     {
         foreach (var ast in _fixture.AbstractSyntaxTrees)
         {
@@ -66,14 +61,36 @@ public class TestCCode : TestBase
         }
     }
 
+    public static TheoryData<string> OpaqueTypesNames() => new()
+    {
+        "OpaqueType_PlatformSpecificSize",
+    };
+
     [Theory]
     [MemberData(nameof(OpaqueTypesNames))]
-    public void OpaqueTypes(string name)
+    public void OpaqueType(string name)
     {
         foreach (var ast in _fixture.AbstractSyntaxTrees)
         {
             var opaqueType = ast.GetOpaqueType(name);
             AssertValue(name, opaqueType, $"{ast.TargetPlatformRequested}/OpaqueTypes");
+        }
+    }
+
+    public static TheoryData<string> MacroObjectNames() => new()
+    {
+        "FFI_PLATFORM_NAME",
+        "MACRO_OBJECT_INT_VALUE"
+    };
+
+    [Theory]
+    [MemberData(nameof(MacroObjectNames))]
+    public void MacroObject(string name)
+    {
+        foreach (var ast in _fixture.AbstractSyntaxTrees)
+        {
+            var value = ast.GetMacroObject(name);
+            AssertValue(name, value, $"{ast.TargetPlatformRequested}/MacroObjects");
         }
     }
 
