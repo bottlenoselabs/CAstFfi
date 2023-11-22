@@ -27,7 +27,7 @@ public sealed partial class ClangInstaller
         _fileSystem = fileSystem;
     }
 
-    public bool Install()
+    public bool Install(string clangFilePath)
     {
         lock (_lock)
         {
@@ -37,7 +37,7 @@ public sealed partial class ClangInstaller
                 return true;
             }
 
-            var filePath = GetClangFilePath(Native.OperatingSystem);
+            var filePath = GetClangFilePath(clangFilePath, Native.OperatingSystem);
             if (string.IsNullOrEmpty(filePath))
             {
                 LogFailure();
@@ -52,26 +52,35 @@ public sealed partial class ClangInstaller
         }
     }
 
-    private string GetClangFilePath(NativeOperatingSystem operatingSystem)
+    private string GetClangFilePath(string clangFilePath, NativeOperatingSystem operatingSystem)
     {
+        if (!string.IsNullOrEmpty(clangFilePath))
+        {
+            return clangFilePath;
+        }
+
+        var path = _fileSystem.Path;
+
         var result = operatingSystem switch
         {
-            NativeOperatingSystem.Windows => GetClangFilePathWindows(),
-            NativeOperatingSystem.Linux => GetClangFilePathLinux(),
-            NativeOperatingSystem.macOS => GetClangFilePathMacOs(),
+            NativeOperatingSystem.Windows => GetClangFilePathWindows(path),
+            NativeOperatingSystem.Linux => GetClangFilePathLinux(path),
+            NativeOperatingSystem.macOS => GetClangFilePathMacOs(path),
             _ => string.Empty
         };
 
         return result;
     }
 
-    private string GetClangFilePathWindows()
+    private string GetClangFilePathWindows(IPath path)
     {
         var filePaths = new[]
         {
             // ReSharper disable StringLiteralTypo
-            Path.Combine(AppContext.BaseDirectory, "libclang.dll"),
-            Path.Combine(AppContext.BaseDirectory, "clang.dll"),
+            path.Combine(Environment.CurrentDirectory, "libclang.dll"),
+            path.Combine(Environment.CurrentDirectory, "clang.dll"),
+            path.Combine(AppContext.BaseDirectory, "libclang.dll"),
+            path.Combine(AppContext.BaseDirectory, "clang.dll"),
             @"C:\Program Files\LLVM\bin\libclang.dll" // choco install llvm
             // ReSharper restore StringLiteralTypo
         };
@@ -87,12 +96,13 @@ public sealed partial class ClangInstaller
         throw new InvalidOperationException(errorMessage);
     }
 
-    private string GetClangFilePathLinux()
+    private string GetClangFilePathLinux(IPath path)
     {
         var filePaths = new[]
         {
             // ReSharper disable StringLiteralTypo
-            Path.Combine(AppContext.BaseDirectory, "libclang.so"),
+            path.Combine(Environment.CurrentDirectory, "libclang.so"),
+            path.Combine(AppContext.BaseDirectory, "libclang.so"),
             "/usr/lib/libclang.so",
 
             // found via running the following command on Ubuntu 20.04: find / -name libclang.so* 2>/dev/null
@@ -113,16 +123,17 @@ public sealed partial class ClangInstaller
         }
 
         var errorMessage =
-            $"`libclang.so`is missing. Tried searching the following paths: \"{string.Join(", ", filePaths)}\". Please put a `libclang.so` file next to this application or install Clang for Linux. To install Clang for Debian-based linux distributions, use the command `apt-get update && apt-get install clang`.";
+            $"`libclang.so` is missing. Tried searching the following paths: \"{string.Join(", ", filePaths)}\". Please put a `libclang.so` file next to this application or install Clang for Linux. To install Clang for Debian-based linux distributions, use the command `apt-get update && apt-get install clang`.";
         throw new InvalidOperationException(errorMessage);
     }
 
-    private string GetClangFilePathMacOs()
+    private string GetClangFilePathMacOs(IPath path)
     {
         var filePaths = new[]
         {
             // ReSharper disable StringLiteralTypo
-            Path.Combine(AppContext.BaseDirectory, "libclang.dylib"),
+            path.Combine(Environment.CurrentDirectory, "libclang.dylib"),
+            path.Combine(AppContext.BaseDirectory, "libclang.dylib"),
             "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib", // XCode
             "/Library/Developer/CommandLineTools/usr/lib/libclang.dylib" // xcode-select --install
             // ReSharper restore StringLiteralTypo

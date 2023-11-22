@@ -17,15 +17,24 @@ public sealed class ExtractAbstractSyntaxTreeCommand : Command
         _tool = tool;
 
         var configurationFilePathOption = new Option<string>(
-            "--config", "The file path to configure extraction of abstract syntax tree `.json` files.");
+#pragma warning disable CA1861
+            new[] {"--config", "--configFilePath" }, "The file path to configure extraction of abstract syntax tree `.json` files.");
+#pragma warning restore CA1861
         configurationFilePathOption.SetDefaultValue("config.json");
 
         AddOption(configurationFilePathOption);
-        this.SetHandler(Main, configurationFilePathOption);
+
+        var clangFilePathOption = new Option<string>(
+#pragma warning disable CA1861
+            new[] { "--clang", "--clangFilePath" }, "The file path to the native libclang library.");
+#pragma warning restore CA1861
+        clangFilePathOption.SetDefaultValue(string.Empty);
+
+        this.SetHandler(Main, configurationFilePathOption, clangFilePathOption);
     }
 
-    private void Main(string configurationFilePath)
+    private void Main(string configurationFilePath, string clangFilePath)
     {
-        _tool.Run(configurationFilePath);
+        _tool.Run(configurationFilePath, clangFilePath);
     }
 }
