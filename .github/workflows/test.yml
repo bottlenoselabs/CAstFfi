@@ -1,31 +1,20 @@
-name: "Build & test .NET solution"
+name: "Test .NET solution"
 
 on:
   workflow_call:
 
 jobs:
 
-  build-dotnet-job:
-    name: "Build .NET solution"
-    runs-on: ubuntu-latest
-    steps:
-
-      - name: "Clone Git repository"
-        uses: actions/checkout@v3
-
-      - name: ".NET Build"
-        run: dotnet build "./src/cs" --nologo --verbosity minimal --configuration Release
-
   test-dotnet-job:
-    name: "Test .NET solution"
+    name: "Test .NET solution: ${{ matrix.platform.name }}"
     runs-on: ${{ matrix.platform.os }}
     strategy:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows x64, os: windows-latest }
-        - { name: Linux x64, os: ubuntu-latest }
-        - { name: macOS x64, os: macos-latest }
+        - { name: Windows, os: windows-latest }
+        - { name: Linux, os: ubuntu-latest }
+        - { name: macOS, os: macos-latest }
     defaults:
       run:
         shell: bash
@@ -33,8 +22,6 @@ jobs:
 
     - name: "Clone Git repository"
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
 
     - name: "Install Clang: Windows"
       if: matrix.platform.os == 'windows-latest'
@@ -47,14 +34,20 @@ jobs:
         sudo apt-get update
         sudo apt-get install gcc-i686-linux-gnu gcc-x86-64-linux-gnu gcc-aarch64-linux-gnu llvm-14 clang-14
 
+    - name: "Setup .NET"
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
+
     - name: "Test .NET solution"
       run: |
-        dotnet test ${{ github.workspace }}/src/cs --nologo --verbosity minimal --configuration Release
+        dotnet test '${{ github.workspace }}/src/cs' --nologo --verbosity minimal --configuration Release
 
-    - name: "Snipe test files"
+    - name: "Collect generated test files"
       uses: actions/upload-artifact@v3
+      if: github.event_name == 'pull_request'
       with:
         name: "Test Data ${{ matrix.platform.name }}"
         path: |
-          ${{ github.workspace }}/src/cs/tests/*Tests*/**/*.json
+          ${{ github.workspace }}/src/cs/tests/*.Tests/Data/Values/**/*.json
 

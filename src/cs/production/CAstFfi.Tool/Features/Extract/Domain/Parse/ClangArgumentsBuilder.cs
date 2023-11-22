@@ -296,7 +296,7 @@ public sealed partial class ClangArgumentsBuilder
             Environment.ExpandEnvironmentVariables(
                 @"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe");
         var shellOutput = "-latest -property installationPath".ExecuteShellCommand(fileName: vsWhereFilePath);
-        var visualStudioInstallationDirectoryPath = shellOutput.Output;
+        var visualStudioInstallationDirectoryPath = shellOutput.Output.Trim();
         if (!_fileSystem.File.Exists(vsWhereFilePath) || string.IsNullOrEmpty(visualStudioInstallationDirectoryPath))
         {
             throw new ClangException(
