@@ -49,5 +49,5 @@ jobs:
       with:
         name: "Test Data ${{ matrix.platform.name }}"
         path: |
-          '${{ github.workspace }}\src/cs/tests/*Tests*/**/*.json'
+          '${{ github.workspace }}/src/cs/tests/*Tests*/**/*.json'
 
