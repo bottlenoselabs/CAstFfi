@@ -22,10 +22,11 @@ public class TestCCode : TestBase
         "Enum_Force_SInt8",
         "Enum_Force_SInt16",
         "Enum_Force_SInt32",
-
+        "Enum_Force_SInt64",
         "Enum_Force_UInt8",
         "Enum_Force_UInt16",
-        "Enum_Force_UInt32"
+        "Enum_Force_UInt32",
+        "Enum_Force_UInt64"
     };
 
     [Theory]
@@ -97,7 +98,7 @@ public class TestCCode : TestBase
     private readonly TestFixtureCCode _fixture;
 
     public TestCCode()
-        : base("Data/Values", false)
+        : base("Data/Values", true)
     {
         var services = TestHost.Services;
         _fixture = services.GetService<TestFixtureCCode>()!;
