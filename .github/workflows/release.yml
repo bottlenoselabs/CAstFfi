@@ -13,9 +13,9 @@ on:
 
 jobs:
 
-  build-test-job:
-    name: "Build & test .NET solution"
-    uses: "./.github/workflows/build-test.yml"
+  test-job:
+    name: "Test .NET solution"
+    uses: "./.github/workflows/test.yml"
 
   release-job:
     name: "Release"

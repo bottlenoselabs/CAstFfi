@@ -201,18 +201,26 @@ dotnet tool install bottlenoselabs.castffi.tool -g
 
 Extract the platform specific abstract syntax tree `.json` files.
 
-#### Windows
-
-`config-windows.json`:
+`config.json`:
 ```json
 {
   "inputFilePath": "path/to/libary/include/header.h",
   "userIncludeDirectories": [
     "path/to/other_library/include"
     ],
-  "platforms": {
-    "x86_64-pc-windows-msvc": {},
-    "aarch64-pc-windows-msvc": {}
+  "targetPlatforms": {
+    "windows": {
+      "x86_64-pc-windows-msvc": {},
+      "aarch64-pc-windows-msvc": {}
+    },
+    "macos": {
+      "aarch64-apple-darwin": {},
+      "x86_64-apple-darwin": {},
+    },
+    "linux": {
+      "x86_64-unknown-linux-gnu": {},
+      "aarch64-unknown-linux-gnu": {}
+    }
   }
 }
 ```
@@ -222,47 +230,7 @@ Terminal:
 castffi extract path/to/config_windows.json
 ```
 
-#### macOS
-
-`config-macos.json`:
-```json
-{
-  "inputFilePath": "path/to/libary/include/header.h",
-  "userIncludeDirectories": [
-    "path/to/other_library/include"
-    ],
-  "platforms": {
-    "aarch64-apple-darwin": {},
-    "x86_64-apple-darwin": {}
-  }
-}
-```
-
-Terminal:
-```bash
-castffi extract path/to/config_macos.json
-```
-
-#### Linux
-
-`config-linux.json`:
-```json
-{
-  "inputFilePath": "path/to/libary/include/header.h",
-  "userIncludeDirectories": [
-    "path/to/other_library/include"
-    ],
-  "platforms": {
-    "aarch64-unknown-linux-gnu": {}
-    "x86_64-unknown-linux-gnu": {},
-  }
-}
-```
-
-Terminal:
-```bash
-castffi extract path/to/config_linux.json
-```
+NOTE: The `targetPlatforms` in the `config.json` is a matrix of operating systems to extract the Clang target triples on. In other words, it will only extract the Clang target triple when on the specific operating systems. For example given the `config.json` above, when the current operating system is `windows`, only the `x86_64-pc-windows-msvc` and `aarch64-pc-windows-msvc` target triples will extracted.
 
 ### Usage `merge`
 
@@ -270,7 +238,7 @@ Once one or more platform abstract syntax tree `.json` files have been extracted
 
 Terminal:
 ```bash
-castffi castffi merge --inputDirectoryPath  /path/to/platform/ast --outputFilePath /path/to/cross-platform-ast.json
+castffi merge --inputDirectoryPath /path/to/platform/ast --outputFilePath /path/to cross-platform-ast.json
 ```
 
 
