@@ -201,7 +201,7 @@ dotnet tool install bottlenoselabs.castffi.tool -g
 
 Extract the platform specific abstract syntax tree `.json` files.
 
-`config.json`:
+`config-extract.json`:
 ```json
 {
   "inputFilePath": "path/to/libary/include/header.h",
@@ -227,7 +227,7 @@ Extract the platform specific abstract syntax tree `.json` files.
 
 Terminal:
 ```bash
-castffi extract path/to/config_windows.json
+castffi extract path/to/config-extract.json
 ```
 
 NOTE: The `targetPlatforms` in the `config.json` is a matrix of operating systems to extract the Clang target triples on. In other words, it will only extract the Clang target triple when on the specific operating systems. For example given the `config.json` above, when the current operating system is `windows`, only the `x86_64-pc-windows-msvc` and `aarch64-pc-windows-msvc` target triples will extracted.
