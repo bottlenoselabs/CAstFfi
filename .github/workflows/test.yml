@@ -34,6 +34,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install gcc-i686-linux-gnu gcc-x86-64-linux-gnu gcc-aarch64-linux-gnu llvm-14 clang-14
 
+    - name: "Setup .NET"
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
+
     - name: "Test .NET solution"
       run: |
         dotnet test '${{ github.workspace }}/src/cs' --nologo --verbosity minimal --configuration Release
