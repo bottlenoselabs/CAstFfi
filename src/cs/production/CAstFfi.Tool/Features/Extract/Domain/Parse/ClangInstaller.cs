@@ -46,7 +46,8 @@ public sealed partial class ClangInstaller
 
             _clangNativeLibraryFilePath = filePath;
             NativeLibrary.SetDllImportResolver(typeof(clang).Assembly, ResolveClang);
-            LogSuccessInstalled(_clangNativeLibraryFilePath);
+            var clangVersion = clang.clang_getClangVersion().String();
+            LogSuccessInstalled(_clangNativeLibraryFilePath, clangVersion);
             _isInstalled = true;
             return true;
         }
@@ -180,8 +181,8 @@ public sealed partial class ClangInstaller
     [LoggerMessage(0, LogLevel.Error, "- Failure, could not determine path to libclang")]
     private partial void LogFailure();
 
-    [LoggerMessage(1, LogLevel.Information, "- Success, installed, file path: {FilePath}")]
-    private partial void LogSuccessInstalled(string filePath);
+    [LoggerMessage(1, LogLevel.Information, "- Success, installed, file path: {FilePath}, version: {Version}")]
+    private partial void LogSuccessInstalled(string filePath, string version);
 
     [LoggerMessage(2, LogLevel.Information, "- Success, already installed, file path: {FilePath}")]
     private partial void LogAlreadyInstalled(string filePath);
