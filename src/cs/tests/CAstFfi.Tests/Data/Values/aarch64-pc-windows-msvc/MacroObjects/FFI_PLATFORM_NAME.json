@@ -1,0 +1,5 @@
+{
+  "name": "FFI_PLATFORM_NAME",
+  "type_name": "const char*",
+  "value": "\u0022aarch64-pc-windows-gnu\u0022"
+}
