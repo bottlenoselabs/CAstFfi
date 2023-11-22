@@ -28,6 +28,11 @@ public abstract partial class ExploreHandler
         _logAlreadyExplored = logAlreadyExplored;
     }
 
+    public void CleanUp()
+    {
+        _visitedNames.Clear();
+    }
+
     protected abstract ExploreKindCursors ExpectedCursors { get; }
 
     protected abstract ExploreKindTypes ExpectedTypes { get; }

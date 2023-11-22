@@ -14,7 +14,7 @@ namespace CAstFfi.Tests;
 
 public abstract class TestBase
 {
-    private readonly string _baseDataFilesDirectory;
+    private readonly string _relativeDataFilesDirectory;
     private readonly IFileSystem _fileSystem;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly bool _regenerateDataFiles;
@@ -22,13 +22,17 @@ public abstract class TestBase
 
     protected TestBase(string baseDataFilesDirectory, bool regenerateDataFiles = false)
     {
-        _baseDataFilesDirectory = baseDataFilesDirectory;
-
         var services = TestHost.Services;
-
         _fileSystem = services.GetService<IFileSystem>()!;
-        var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-        _sourceDirectoryPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, $"../../../../src/cs/tests/{assemblyName}"));
+        var path = _fileSystem.Path;
+        _sourceDirectoryPath = Path.Combine(
+            GetGitRepositoryDirectoryPath(),
+            "src",
+            "cs",
+            "tests",
+            "CAstFfi.Tests");
+        _relativeDataFilesDirectory = path.Combine(_sourceDirectoryPath, baseDataFilesDirectory);
+
         _regenerateDataFiles = regenerateDataFiles;
 
         _jsonSerializerOptions = new JsonSerializerOptions
@@ -45,16 +49,11 @@ public abstract class TestBase
     protected void AssertValue<T>(string name, T value, string directory)
     {
         var relativeJsonFilePath =
-            _fileSystem.Path.Combine(_baseDataFilesDirectory, directory, $"{name}.json");
-        string jsonFilePath;
+            _fileSystem.Path.Combine(_relativeDataFilesDirectory, directory, $"{name}.json");
+        var jsonFilePath = _fileSystem.Path.Combine(_sourceDirectoryPath, relativeJsonFilePath);
         if (_regenerateDataFiles)
         {
-            jsonFilePath = _fileSystem.Path.Combine(_sourceDirectoryPath, relativeJsonFilePath);
             RegenerateDataFile(jsonFilePath, value);
-        }
-        else
-        {
-            jsonFilePath = _fileSystem.Path.Combine(AppContext.BaseDirectory, relativeJsonFilePath);
         }
 
         var expectedValue = ReadValueFromFile<T>(jsonFilePath);
@@ -103,5 +102,25 @@ public abstract class TestBase
         textWriter.Write(fileContents);
         textWriter.Close();
         fileStream.Close();
+    }
+
+    private static string GetGitRepositoryDirectoryPath()
+    {
+        var baseDirectory = AppContext.BaseDirectory;
+        var directoryInfo = new DirectoryInfo(baseDirectory);
+        while (true)
+        {
+            var files = directoryInfo.GetFiles(".gitignore", SearchOption.TopDirectoryOnly);
+            if (files.Length > 0)
+            {
+                return directoryInfo.FullName;
+            }
+
+            directoryInfo = directoryInfo.Parent;
+            if (directoryInfo == null)
+            {
+                return string.Empty;
+            }
+        }
     }
 }

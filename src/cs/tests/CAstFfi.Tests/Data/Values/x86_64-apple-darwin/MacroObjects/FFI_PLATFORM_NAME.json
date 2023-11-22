@@ -1,0 +1,5 @@
+{
+  "name": "FFI_PLATFORM_NAME",
+  "type_name": "const char*",
+  "value": "\u0022x86_64-apple-darwin\u0022"
+}

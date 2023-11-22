@@ -24,13 +24,6 @@
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-	<ItemGroup>
-		<Content Include="$(GitRepositoryPath)/icon.png">
-			<Pack>true</Pack>
-			<PackagePath>icon.png</PackagePath>
-			<Link>Properties/bottlenoselabs/icon.png</Link>
-		</Content>
-	</ItemGroup>
 
 	<!-- NuGet package references -->
 	<ItemGroup>

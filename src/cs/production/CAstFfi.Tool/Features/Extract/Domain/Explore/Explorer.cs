@@ -20,19 +20,19 @@ namespace CAstFfi.Features.Extract.Domain.Explore;
 public sealed partial class Explorer
 {
     private readonly ILogger<Explorer> _logger;
+    private readonly Parser _parser;
+    private readonly ImmutableDictionary<CKind, ExploreHandler> _handlers;
 
-    private readonly List<CArray> _arrays = new();
-    private readonly List<CEnumConstant> _enumConstants = new();
-    private readonly List<CEnum> _enums = new();
     private readonly ArrayDeque<ExploreInfoNode> _frontierFunctions = new();
     private readonly ArrayDeque<ExploreInfoNode> _frontierTypes = new();
     private readonly ArrayDeque<ExploreInfoNode> _frontierVariables = new();
+    private readonly List<CArray> _arrays = new();
+    private readonly List<CEnumConstant> _enumConstants = new();
+    private readonly List<CEnum> _enums = new();
     private readonly List<CFunctionPointer> _functionPointers = new();
     private readonly List<CFunction> _functions = new();
-    private readonly ImmutableDictionary<CKind, Features.Extract.Domain.Explore.ExploreHandler> _handlers;
     private readonly List<MacroObjectCandidate> _macroObjectCandidates = new();
     private readonly List<COpaqueType> _opaqueTypes = new();
-    private readonly Parser _parser;
     private readonly List<CPointer> _pointers = new();
     private readonly List<CPrimitive> _primitives = new();
     private readonly List<CRecord> _records = new();
@@ -95,9 +95,9 @@ public sealed partial class Explorer
         return result;
     }
 
-    private static ImmutableDictionary<CKind, Features.Extract.Domain.Explore.ExploreHandler> CreateHandlers(IServiceProvider services)
+    private static ImmutableDictionary<CKind, ExploreHandler> CreateHandlers(IServiceProvider services)
     {
-        var result = new Dictionary<CKind, Features.Extract.Domain.Explore.ExploreHandler>
+        var result = new Dictionary<CKind, ExploreHandler>
         {
             { CKind.EnumConstant, services.GetService<EnumConstantExplorer>()! },
             { CKind.Variable, services.GetService<VariableExplorer>()! },
@@ -119,6 +119,27 @@ public sealed partial class Explorer
     {
         clang_disposeTranslationUnit(context.TranslationUnit);
         _parser.CleanUp();
+
+        foreach (var handler in _handlers.Values)
+        {
+            handler.CleanUp();
+        }
+
+        _frontierFunctions.Clear();
+        _frontierTypes.Clear();
+        _frontierVariables.Clear();
+        _arrays.Clear();
+        _enumConstants.Clear();
+        _enums.Clear();
+        _functionPointers.Clear();
+        _functions.Clear();
+        _macroObjectCandidates.Clear();
+        _opaqueTypes.Clear();
+        _pointers.Clear();
+        _primitives.Clear();
+        _records.Clear();
+        _typeAliases.Clear();
+        _variables.Clear();
     }
 
     private CAbstractSyntaxTreeTargetPlatform CollectAbstractSyntaxTree(ExploreContext context)

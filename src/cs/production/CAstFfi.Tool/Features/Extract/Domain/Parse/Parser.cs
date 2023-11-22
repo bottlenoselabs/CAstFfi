@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using bottlenoselabs.Common;
+using bottlenoselabs.Common.Tools;
 using CAstFfi.Data;
 using CAstFfi.Features.Extract.Infrastructure.Clang;
 using CAstFfi.Features.Extract.Input.Sanitized;
@@ -154,6 +155,12 @@ public sealed partial class Parser
         var translationUnitCursor = clang_getTranslationUnitCursor(translationUnit);
         var functionCursor = translationUnitCursor
             .GetDescendents(static (cursor, _) => IsFunctionWithMacroVariables(cursor)).FirstOrDefault();
+        if (functionCursor.kind == 0)
+        {
+            var libClangVersion = clang_getClangVersion().String();
+            throw new ToolException($@"Failed to parse C++ file to determine types of macro objects. Please ensure your libclang version is up-to-date. Current libclang version: {libClangVersion}.");
+        }
+
         var compoundStatement = functionCursor.GetDescendents(static (cursor, _) => IsCompoundStatement(cursor))
             .FirstOrDefault();
         var declarationStatements =

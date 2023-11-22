@@ -24,3 +24,6 @@ lib/
 
 # macOS
 .DS_Store
+
+# Generated test files
+src/cs/tests/CAstFfi.Tests/ast/

@@ -31,9 +31,9 @@ public sealed partial class ExtractAbstractSyntaxTreeTool
         _explorer = explorer;
     }
 
-    public void Run(string configurationFilePath)
+    public void Run(string configurationFilePath, string clangFilePath)
     {
-        var isClangInstalled = _clangInstaller.Install();
+        var isClangInstalled = _clangInstaller.Install(clangFilePath);
         if (!isClangInstalled)
         {
             return;
