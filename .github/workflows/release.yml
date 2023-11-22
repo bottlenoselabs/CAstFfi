@@ -19,7 +19,7 @@ jobs:
 
   release-job:
     name: "Release"
-    needs: [build-job]
+    needs: [test-job]
     runs-on: ubuntu-latest
     permissions:
       contents: write
