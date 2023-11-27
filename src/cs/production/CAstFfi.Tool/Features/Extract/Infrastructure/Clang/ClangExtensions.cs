@@ -33,10 +33,10 @@ public static unsafe class ClangExtensions
     }
 
     public static ImmutableArray<CXCursor> GetDescendents(
-        this CXCursor cursor, VisitChildPredicate? predicate = null, bool mustBeFromSameFile = true)
+        this CXCursor cursor, VisitChildPredicate? predicate = null)
     {
         var predicate2 = predicate ?? EmptyPredicate;
-        var visitData = new VisitChildInstance(predicate2, mustBeFromSameFile);
+        var visitData = new VisitChildInstance(predicate2);
         var visitsCount = Interlocked.Increment(ref _visitChildCount);
         if (visitsCount > _visitChildInstances.Length)
         {
@@ -65,7 +65,7 @@ public static unsafe class ClangExtensions
         }
 
         var predicate2 = predicate ?? EmptyPredicate;
-        var visitData = new VisitChildInstance(predicate2, false);
+        var visitData = new VisitChildInstance(predicate2);
         var visitsCount = Interlocked.Increment(ref _visitChildCount);
         if (visitsCount > _visitChildInstances.Length)
         {
@@ -369,16 +369,6 @@ public static unsafe class ClangExtensions
         var index = (int)clientData.Data;
         var data = _visitChildInstances[index - 1];
 
-        if (data.MustBeFromSameFile)
-        {
-            var location = clang_getCursorLocation(child);
-            var isFromMainFile = clang_Location_isFromMainFile(location) > 0;
-            if (!isFromMainFile)
-            {
-                return CXChildVisitResult.CXChildVisit_Continue;
-            }
-        }
-
         var result = data.Predicate(child, parent);
         if (!result)
         {
@@ -540,6 +530,7 @@ public static unsafe class ClangExtensions
         {
             FileName = Path.GetFileName(filePath),
             FilePath = filePath,
+            FullFilePath = Path.GetFullPath(filePath),
             LineNumber = lineNumber,
             LineColumn = columnNumber
         };
@@ -549,13 +540,11 @@ public static unsafe class ClangExtensions
     {
         public readonly VisitChildPredicate Predicate;
         public readonly ImmutableArray<CXCursor>.Builder CursorBuilder;
-        public readonly bool MustBeFromSameFile;
 
-        public VisitChildInstance(VisitChildPredicate predicate, bool mustBeFromSameFile)
+        public VisitChildInstance(VisitChildPredicate predicate)
         {
             Predicate = predicate;
             CursorBuilder = ImmutableArray.CreateBuilder<CXCursor>();
-            MustBeFromSameFile = mustBeFromSameFile;
         }
     }
 

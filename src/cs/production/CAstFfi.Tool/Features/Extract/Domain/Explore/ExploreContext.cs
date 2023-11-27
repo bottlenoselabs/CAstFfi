@@ -250,8 +250,7 @@ public sealed class ExploreContext
             typeCursor.GetDescendents(
                 static (
                     cursor,
-                    _) => cursor.kind == CXCursorKind.CXCursor_EnumConstantDecl,
-                false);
+                    _) => cursor.kind == CXCursorKind.CXCursor_EnumConstantDecl);
         /* Example C code; this enum should have it's single member promoted as a macro object.
 enum {
 noErr = 0

@@ -414,15 +414,13 @@ public sealed partial class Explorer
 
         VisitMacroCandidates(context, translationUnit, filePath);
 
-        var isEnabledSingleHeader = context.ParseOptions.IsEnabledSingleHeader;
         var translationUnitCursor = clang_getTranslationUnitCursor(translationUnit);
 
         ImmutableArray<CXCursor> cursors;
 
         if (context.ExploreOptions.IsEnabledOnlyExternalTopLevelCursors)
         {
-            cursors = translationUnitCursor.GetDescendents(
-                (child, _) => IsExternalTopLevelCursor(child), !isEnabledSingleHeader);
+            cursors = translationUnitCursor.GetDescendents(static (child, _) => IsExternalTopLevelCursor(child));
         }
         else
         {
@@ -431,13 +429,10 @@ public sealed partial class Explorer
 
         foreach (var cursor in cursors)
         {
-            VisitTopLevelCursor(context, cursor);
+            TryVisitTopLevelCursor(context, cursor);
         }
 
-        if (!isEnabledSingleHeader)
-        {
-            VisitIncludes(context, translationUnit);
-        }
+        VisitIncludes(context, translationUnit);
 
         LogVisitedTranslationUnit(filePath);
     }
@@ -462,36 +457,63 @@ public sealed partial class Explorer
 
         foreach (var includeCursor in includeCursors)
         {
-            var code = includeCursor.GetCode(stringBuilder);
-            var isSystem = code.Contains('<', StringComparison.InvariantCulture);
-            if (isSystem && !context.ExploreOptions.IsEnabledSystemDeclarations)
-            {
-                continue;
-            }
-
-            var file = clang_getIncludedFile(includeCursor);
-            var filePath = clang_getFileName(file).String();
-            if (_visitedIncludeFilePaths.Contains(filePath))
-            {
-                continue;
-            }
-
-            _visitedIncludeFilePaths.Add(filePath);
-            VisitInclude(context, filePath);
+            TryVisitInclude(context, includeCursor, stringBuilder);
         }
     }
 
-    private void VisitInclude(ExploreContext context, string headerFilePath)
+    private void TryVisitInclude(ExploreContext context, CXCursor includeCursor, StringBuilder stringBuilder)
+    {
+        var code = includeCursor.GetCode(stringBuilder);
+        var isSystem = code.Contains('<', StringComparison.InvariantCulture);
+        if (isSystem && !context.ExploreOptions.IsEnabledSystemDeclarations)
+        {
+            return;
+        }
+
+        var file = clang_getIncludedFile(includeCursor);
+        var filePath = Path.GetFullPath(clang_getFileName(file).String());
+
+        var isIgnored = IsIncludeIgnored(context, filePath);
+        if (isIgnored)
+        {
+            return;
+        }
+
+        if (_visitedIncludeFilePaths.Contains(filePath))
+        {
+            return;
+        }
+
+        _visitedIncludeFilePaths.Add(filePath);
+        VisitInclude(context, filePath);
+    }
+
+    private void VisitInclude(ExploreContext context, string filePath)
     {
         var includeTranslationUnit = _parser.TranslationUnit(
-            headerFilePath,
+            filePath,
             context.TargetPlatformRequested,
             context.ParseOptions,
             out _,
             true,
             true);
 
-        VisitTranslationUnit(context, includeTranslationUnit, headerFilePath);
+        VisitTranslationUnit(context, includeTranslationUnit, filePath);
+    }
+
+    private static bool IsIncludeIgnored(ExploreContext context, string filePath)
+    {
+        var isIgnored = false;
+        foreach (var ignoredIncludeDirectory in context.ExploreOptions.IgnoredIncludeDirectories)
+        {
+            if (filePath.Contains(ignoredIncludeDirectory, StringComparison.InvariantCulture))
+            {
+                isIgnored = true;
+                break;
+            }
+        }
+
+        return isIgnored;
     }
 
     private static bool IsExternalTopLevelCursor(CXCursor cursor)
@@ -518,7 +540,7 @@ public sealed partial class Explorer
         return isExported;
     }
 
-    private void VisitTopLevelCursor(ExploreContext context, CXCursor cursor)
+    private void TryVisitTopLevelCursor(ExploreContext context, CXCursor cursor)
     {
         if (cursor.kind is CXCursorKind.CXCursor_MacroDefinition
             or CXCursorKind.CXCursor_MacroExpansion
@@ -544,6 +566,23 @@ public sealed partial class Explorer
             return;
         }
 
+        var location = cursor.GetLocation();
+        if (location != null)
+        {
+            foreach (var ignoredIncludeDirectory in context.ExploreOptions.IgnoredIncludeDirectories)
+            {
+                if (location.Value.FullFilePath.Contains(ignoredIncludeDirectory, StringComparison.InvariantCulture))
+                {
+                    return;
+                }
+            }
+        }
+
+        VisitTopLevelCursor(context, cursor, kind);
+    }
+
+    private void VisitTopLevelCursor(ExploreContext context, CXCursor cursor, CKind kind)
+    {
         var type = clang_getCursorType(cursor);
         if (type.kind == CXTypeKind.CXType_Unexposed)
         {
@@ -570,8 +609,7 @@ public sealed partial class Explorer
         if (kind == CKind.Enum && isAnonymous)
         {
             var enumConstants = cursor.GetDescendents(
-                static (cursor, _) => cursor.kind == CXCursorKind.CXCursor_EnumConstantDecl,
-                false);
+                static (cursor, _) => cursor.kind == CXCursorKind.CXCursor_EnumConstantDecl);
             var enumIntegerType = clang_getEnumDeclIntegerType(cursor);
             foreach (var enumConstant in enumConstants)
             {

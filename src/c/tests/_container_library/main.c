@@ -5,3 +5,4 @@
 #include "../function_pointers/_index.h"
 #include "../opaque_types/_index.h"
 #include "../macro_objects/_index.h"
+#include "../ignored/_index.h"

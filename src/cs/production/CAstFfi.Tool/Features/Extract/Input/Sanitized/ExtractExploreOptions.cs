@@ -11,5 +11,7 @@ public sealed class ExtractExploreOptions
 
     public bool IsEnabledOnlyExternalTopLevelCursors { get; init; }
 
+    public ImmutableHashSet<string> IgnoredIncludeDirectories { get; init; } = ImmutableHashSet<string>.Empty;
+
     public ImmutableHashSet<string> OpaqueTypeNames { get; init; } = ImmutableHashSet<string>.Empty;
 }

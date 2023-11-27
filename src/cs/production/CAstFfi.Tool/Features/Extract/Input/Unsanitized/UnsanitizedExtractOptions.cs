@@ -42,6 +42,12 @@ public sealed class UnsanitizedExtractOptions
     public ImmutableArray<string>? SystemIncludeDirectories { get; set; }
 
     /// <summary>
+    ///     The directories to ignore header files for either user or system.
+    /// </summary>
+    [JsonPropertyName("ignoredIncludeDirectories")]
+    public ImmutableArray<string>? IgnoredIncludeDirectories { get; set; }
+
+    /// <summary>
     ///     Determines whether to show the the path of header code locations with full paths or relative paths.
     /// </summary>
     /// <remarks>
@@ -89,20 +95,6 @@ public sealed class UnsanitizedExtractOptions
     /// </remarks>
     [JsonPropertyName("isEnabledAutomaticallyFindSystemHeaders")]
     public bool? IsEnabledAutomaticallyFindSystemHeaders { get; set; }
-
-    /// <summary>
-    ///     Determines whether to parse the main input header file and all transitive inclusive header files as if it
-    ///     were a single translation unit.
-    /// </summary>
-    /// <remarks>
-    ///     <para>
-    ///         Default is <c>true</c>. Use <c>true</c> to parse the the main input header file and all transitive
-    ///         inclusive headers as if it were a single translation unit. Use <c>false</c> to parse each translation
-    ///         unit independently.
-    ///     </para>
-    /// </remarks>
-    [JsonPropertyName("isEnabledParseAsSingleHeader")]
-    public bool? IsEnabledParseAsSingleHeader { get; set; }
 
     /// <summary>
     ///     Determines whether to parse only the top-level cursors which are externally visible, or all top-level cursors.

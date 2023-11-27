@@ -521,12 +521,8 @@ int main(void)
         ExtractParseOptions options)
     {
         var translationUnitCursor = clang_getTranslationUnitCursor(translationUnit);
-
-        var isEnabledSingleHeader = options.IsEnabledSingleHeader;
         var cursors = translationUnitCursor.GetDescendents(
-            (child, _) => IsMacroOfInterest(child, options),
-            !isEnabledSingleHeader);
-
+            (child, _) => IsMacroOfInterest(child, options));
         return cursors;
     }
 
@@ -560,6 +556,18 @@ int main(void)
         if (isMacroFunction)
         {
             return false;
+        }
+
+        var location = cursor.GetLocation();
+        if (location != null)
+        {
+            foreach (var ignoredIncludeDirectory in options.IgnoredIncludeDirectories)
+            {
+                if (location.Value.FullFilePath.Contains(ignoredIncludeDirectory, StringComparison.InvariantCulture))
+                {
+                    return false;
+                }
+            }
         }
 
         var name = cursor.Name();

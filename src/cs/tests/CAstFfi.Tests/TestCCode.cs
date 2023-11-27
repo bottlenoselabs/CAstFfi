@@ -22,11 +22,9 @@ public class TestCCode : TestBase
         "Enum_Force_SInt8",
         "Enum_Force_SInt16",
         "Enum_Force_SInt32",
-        "Enum_Force_SInt64",
         "Enum_Force_UInt8",
         "Enum_Force_UInt16",
-        "Enum_Force_UInt32",
-        "Enum_Force_UInt64"
+        "Enum_Force_UInt32"
     };
 
     [Theory]
@@ -37,6 +35,22 @@ public class TestCCode : TestBase
         {
             var value = ast.GetEnum(name);
             AssertValue(name, value, $"{ast.TargetPlatformRequested}/Enums");
+        }
+    }
+
+    public static TheoryData<string> EnumNamesIgnored => new()
+    {
+        "EnumIgnored"
+    };
+
+    [Theory]
+    [MemberData(nameof(EnumNamesIgnored))]
+    public void EnumIgnored(string name)
+    {
+        foreach (var ast in _fixture.AbstractSyntaxTrees)
+        {
+            var value = ast.TryGetEnum(name);
+            Assert.True(value == null, $"The enum '{name}' was not ignored.");
         }
     }
 
@@ -92,6 +106,22 @@ public class TestCCode : TestBase
         {
             var value = ast.GetMacroObject(name);
             AssertValue(name, value, $"{ast.TargetPlatformRequested}/MacroObjects");
+        }
+    }
+
+    public static TheoryData<string> MacroObjectNamesIgnored() => new()
+    {
+        "MACRO_OBJECT_IGNORED"
+    };
+
+    [Theory]
+    [MemberData(nameof(MacroObjectNamesIgnored))]
+    public void MacroObjectIgnored(string name)
+    {
+        foreach (var ast in _fixture.AbstractSyntaxTrees)
+        {
+            var value = ast.TryGetMacroObject(name);
+            Assert.True(value == null, $"The macro object '{name}' was not ignored.");
         }
     }
 

@@ -29,16 +29,17 @@ public sealed class ExtractInputSanitizer
 
     public ExtractOptions SanitizeFromFile(string filePath)
     {
-        var fullFilePath = _fileSystem.Path.GetFullPath(filePath);
+        var path = _fileSystem.Path;
+        var fullFilePath = path.GetFullPath(filePath);
         if (!_fileSystem.File.Exists(fullFilePath))
         {
-            throw new ToolInputSanitizationException($"The extract options file '{filePath}' does not exist.");
+            throw new ToolInputSanitizationException($"The extract options file '{fullFilePath}' does not exist.");
         }
 
         var fileContents = _fileSystem.File.ReadAllText(fullFilePath);
         if (string.IsNullOrEmpty(fileContents))
         {
-            throw new ToolInputSanitizationException($"The extract options file '{filePath}' is empty.");
+            throw new ToolInputSanitizationException($"The extract options file '{fullFilePath}' is empty.");
         }
 
         var unsanitizedProgramOptions = JsonSerializer.Deserialize<UnsanitizedExtractOptions>(
@@ -49,7 +50,7 @@ public sealed class ExtractInputSanitizer
         }
 
         var previousCurrentDirectory = Environment.CurrentDirectory;
-        Environment.CurrentDirectory = Path.GetDirectoryName(filePath)!;
+        Environment.CurrentDirectory = path.GetDirectoryName(fullFilePath)!;
         var result = Sanitize(unsanitizedProgramOptions);
         Environment.CurrentDirectory = previousCurrentDirectory;
 
@@ -125,17 +126,21 @@ public sealed class ExtractInputSanitizer
     {
         var systemIncludeDirectories = VerifyImmutableArray(options.SystemIncludeDirectories);
         var systemIncludeDirectoriesPlatform =
-            VerifySystemDirectoriesPlatform(targetPlatformOptions?.SystemIncludeDirectories, systemIncludeDirectories);
+            VerifySystemIncludeDirectoriesPlatform(targetPlatformOptions.SystemIncludeDirectories, systemIncludeDirectories);
 
-        var userIncludeDirectories = VerifyIncludeDirectories(options.UserIncludeDirectories, inputFilePath);
+        var userIncludeDirectories = VerifyUserIncludeDirectories(options.UserIncludeDirectories, inputFilePath);
         var userIncludeDirectoriesPlatform =
             VerifyIncludeDirectoriesPlatform(
-                targetPlatformOptions?.UserIncludeDirectories,
+                targetPlatformOptions.UserIncludeDirectories,
                 inputFilePath,
                 userIncludeDirectories);
 
+        var ignoredIncludeDirectories = VerifyImmutableArray(options.IgnoredIncludeDirectories);
+        var ignoredIncludeDirectoriesPlatform =
+            VerifyIgnoredIncludeDirectoriesPlatform(targetPlatformOptions.IgnoredIncludeDirectories, ignoredIncludeDirectories);
+
         var frameworks = VerifyImmutableArray(options.AppleFrameworks);
-        var frameworksPlatform = VerifyFrameworks(targetPlatformOptions?.AppleFrameworks, frameworks);
+        var frameworksPlatform = VerifyFrameworks(targetPlatformOptions.AppleFrameworks, frameworks);
 
         var outputFilePath = VerifyOutputFilePath(options.OutputDirectory, targetPlatformString);
 
@@ -152,18 +157,19 @@ public sealed class ExtractInputSanitizer
             {
                 IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
                 IsEnabledOnlyExternalTopLevelCursors = options.IsEnabledOnlyExternalTopLevelCursors ?? true,
-                OpaqueTypeNames = VerifyImmutableArray(options.OpaqueTypeNames).ToImmutableHashSet()
+                OpaqueTypeNames = VerifyImmutableArray(options.OpaqueTypeNames).ToImmutableHashSet(),
+                IgnoredIncludeDirectories = ignoredIncludeDirectoriesPlatform
             },
             ParseOptions = new ExtractParseOptions
             {
                 UserIncludeDirectories = userIncludeDirectoriesPlatform,
                 SystemIncludeDirectories = systemIncludeDirectoriesPlatform,
+                IgnoredIncludeDirectories = ignoredIncludeDirectoriesPlatform,
                 MacroObjectDefines = clangDefines,
                 AdditionalArguments = clangArguments,
                 IsEnabledFindSystemHeaders = options.IsEnabledAutomaticallyFindSystemHeaders ?? true,
                 AppleFrameworks = frameworksPlatform,
                 IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
-                IsEnabledSingleHeader = options.IsEnabledParseAsSingleHeader ?? true
             }
         };
 
@@ -206,7 +212,7 @@ public sealed class ExtractInputSanitizer
         return defaultFilePath;
     }
 
-    private ImmutableArray<string> VerifyIncludeDirectories(
+    private ImmutableArray<string> VerifyUserIncludeDirectories(
         ImmutableArray<string>? includeDirectories,
         string inputFilePath)
     {
@@ -251,18 +257,36 @@ public sealed class ExtractInputSanitizer
             return includeDirectoriesNonPlatform;
         }
 
-        var directoriesPlatform = VerifyIncludeDirectories(includeDirectoriesPlatform, inputFilePath);
+        var directoriesPlatform = VerifyUserIncludeDirectories(includeDirectoriesPlatform, inputFilePath);
         var result = directoriesPlatform.AddRange(includeDirectoriesNonPlatform);
         return result;
     }
 
-    private ImmutableArray<string> VerifySystemDirectoriesPlatform(
+    private ImmutableArray<string> VerifySystemIncludeDirectoriesPlatform(
         ImmutableArray<string>? includeDirectoriesPlatform,
         ImmutableArray<string> includeDirectoriesNonPlatform)
     {
         var directoriesPlatform = VerifyImmutableArray(includeDirectoriesPlatform);
         var result = directoriesPlatform.AddRange(includeDirectoriesNonPlatform);
         return result;
+    }
+
+    private ImmutableHashSet<string> VerifyIgnoredIncludeDirectoriesPlatform(
+        ImmutableArray<string>? ignoredIncludeDirectoriesPlatform,
+        ImmutableArray<string> ignoredIncludeDirectoriesNonPlatform)
+    {
+        var directoriesPlatform = VerifyImmutableArray(ignoredIncludeDirectoriesPlatform);
+        var directoryPaths = directoriesPlatform.AddRange(ignoredIncludeDirectoriesNonPlatform);
+
+        var builder = ImmutableHashSet.CreateBuilder<string>();
+        var path = _fileSystem.Path;
+        foreach (var directoryPath in directoryPaths)
+        {
+            var fullDirectoryPath = path.GetFullPath(directoryPath);
+            builder.Add(fullDirectoryPath);
+        }
+
+        return builder.ToImmutable();
     }
 
     private ImmutableArray<string> VerifyFrameworks(

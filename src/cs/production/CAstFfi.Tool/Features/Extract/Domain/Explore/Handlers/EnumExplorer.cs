@@ -62,8 +62,7 @@ public sealed class EnumExplorer : ExploreNodeHandler<CEnum>
         var builder = ImmutableArray.CreateBuilder<CEnumValue>();
 
         var enumValuesCursors = cursor.GetDescendents(
-            (child, _) => child.kind == CXCursorKind.CXCursor_EnumConstantDecl,
-            false);
+            static (child, _) => child.kind == CXCursorKind.CXCursor_EnumConstantDecl);
 
         foreach (var enumValueCursor in enumValuesCursors)
         {

@@ -3,6 +3,9 @@
     "userIncludeDirectories": [
         "../../../../src/c/production/ffi_helper/include"
     ],
+    "ignoredIncludeDirectories": [
+      "../../../../src/c/tests/ignored"
+    ],
     "opaqueTypeNames": [
         "OpaqueType_PlatformSpecificSize"
     ],

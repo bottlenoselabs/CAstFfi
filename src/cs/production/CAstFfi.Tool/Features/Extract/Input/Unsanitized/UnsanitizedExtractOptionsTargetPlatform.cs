@@ -24,6 +24,12 @@ public sealed class UnsanitizedExtractOptionsTargetPlatform
     public ImmutableArray<string>? SystemIncludeDirectories { get; set; }
 
     /// <summary>
+    ///     The directories to ignore header files for either user or system.
+    /// </summary>
+    [JsonPropertyName("ignoredIncludeDirectories")]
+    public ImmutableArray<string>? IgnoredIncludeDirectories { get; set; }
+
+    /// <summary>
     ///     The object-like macros to use when parsing C code.
     /// </summary>
     [JsonPropertyName("defines")]
