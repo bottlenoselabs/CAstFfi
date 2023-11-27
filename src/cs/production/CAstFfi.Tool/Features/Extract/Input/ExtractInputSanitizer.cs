@@ -137,7 +137,7 @@ public sealed class ExtractInputSanitizer
 
         var ignoredIncludeDirectories = VerifyImmutableArray(options.IgnoredIncludeDirectories);
         var ignoredIncludeDirectoriesPlatform =
-            VerifyIgnoredIncludeDirectoriesPlatform(targetPlatformOptions.IgnoredIncludeDirectories, ignoredIncludeDirectories);
+            VerifyImmutableArrayFilePaths(targetPlatformOptions.IgnoredIncludeDirectories, ignoredIncludeDirectories);
 
         var frameworks = VerifyImmutableArray(options.AppleFrameworks);
         var frameworksPlatform = VerifyFrameworks(targetPlatformOptions.AppleFrameworks, frameworks);
@@ -271,14 +271,14 @@ public sealed class ExtractInputSanitizer
         return result;
     }
 
-    private ImmutableHashSet<string> VerifyIgnoredIncludeDirectoriesPlatform(
+    private ImmutableArray<string> VerifyImmutableArrayFilePaths(
         ImmutableArray<string>? ignoredIncludeDirectoriesPlatform,
         ImmutableArray<string> ignoredIncludeDirectoriesNonPlatform)
     {
         var directoriesPlatform = VerifyImmutableArray(ignoredIncludeDirectoriesPlatform);
         var directoryPaths = directoriesPlatform.AddRange(ignoredIncludeDirectoriesNonPlatform);
 
-        var builder = ImmutableHashSet.CreateBuilder<string>();
+        var builder = ImmutableArray.CreateBuilder<string>();
         var path = _fileSystem.Path;
         foreach (var directoryPath in directoryPaths)
         {

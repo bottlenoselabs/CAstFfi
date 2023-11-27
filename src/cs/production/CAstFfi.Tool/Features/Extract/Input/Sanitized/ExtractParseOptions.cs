@@ -11,7 +11,7 @@ public sealed class ExtractParseOptions
 
     public ImmutableArray<string> SystemIncludeDirectories { get; init; } = ImmutableArray<string>.Empty;
 
-    public ImmutableHashSet<string> IgnoredIncludeDirectories { get; init; } = ImmutableHashSet<string>.Empty;
+    public ImmutableArray<string> IgnoredIncludeDirectories { get; init; } = ImmutableArray<string>.Empty;
 
     public ImmutableArray<string> MacroObjectDefines { get; init; } = ImmutableArray<string>.Empty;
 
