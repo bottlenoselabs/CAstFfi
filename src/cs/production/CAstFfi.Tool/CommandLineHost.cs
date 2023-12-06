@@ -33,7 +33,17 @@ public sealed class CommandLineHost : IHostedService
     private void Main()
     {
         var commandLineArguments = Environment.GetCommandLineArgs().Skip(1).ToArray();
-        Environment.ExitCode = _rootCommand.Invoke(commandLineArguments);
+
+        try
+        {
+            Environment.ExitCode = _rootCommand.Invoke(commandLineArguments);
+        }
+        catch
+        {
+            Environment.ExitCode = 1;
+            throw;
+        }
+
         _applicationLifetime.StopApplication();
     }
 }
