@@ -19,12 +19,13 @@ public class TestCCode : TestBase
 
     public static TheoryData<string> EnumNames() => new()
     {
-        "Enum_Force_SInt8",
-        "Enum_Force_SInt16",
-        "Enum_Force_SInt32",
-        "Enum_Force_UInt8",
-        "Enum_Force_UInt16",
-        "Enum_Force_UInt32"
+        "EnumForceSInt8",
+        "EnumForceSInt16",
+        "EnumForceSInt32",
+        "EnumForceUInt8",
+        "EnumForceUInt16",
+        "EnumForceUInt32",
+        "EnumForceUInt64"
     };
 
     [Theory]
