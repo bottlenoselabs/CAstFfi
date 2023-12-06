@@ -303,7 +303,7 @@ public sealed partial class ClangArgumentsBuilder
                 "Please install Visual Studio 2017 or later (community, professional, or enterprise).");
         }
 
-        var mscvVersionsDirectoryPath = Path.Combine(visualStudioInstallationDirectoryPath, @"VC\Tools\MSVC");
+        var mscvVersionsDirectoryPath = _fileSystem.Path.Combine(visualStudioInstallationDirectoryPath, @"VC\Tools\MSVC");
         if (!_fileSystem.Directory.Exists(mscvVersionsDirectoryPath))
         {
             throw new ClangException(
@@ -317,7 +317,7 @@ public sealed partial class ClangArgumentsBuilder
                 $"Unable to find a version for Microsoft Visual C++ (MSVC) build tools for Visual Studio ({visualStudioInstallationDirectoryPath}).");
         }
 
-        var mscvIncludeDirectoryPath = Path.Combine(mscvHighestVersionDirectoryPath, "include");
+        var mscvIncludeDirectoryPath = _fileSystem.Path.Combine(mscvHighestVersionDirectoryPath, "include");
         if (!_fileSystem.Directory.Exists(mscvIncludeDirectoryPath))
         {
             throw new ClangException(
@@ -434,7 +434,7 @@ public sealed partial class ClangArgumentsBuilder
         var frameworkLinks = new List<(string FrameworkName, string LinkTargetPath)>();
         foreach (var framework in frameworks)
         {
-            var systemFrameworkPath = Path.Combine(
+            var systemFrameworkPath = _fileSystem.Path.Combine(
                 sdkPath, "System", "Library", "Frameworks", framework + ".framework", "Headers");
             if (_fileSystem.Directory.Exists(systemFrameworkPath))
             {
