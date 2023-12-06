@@ -139,9 +139,6 @@ public sealed class ExtractInputSanitizer
         var ignoredIncludeDirectoriesPlatform =
             VerifyImmutableArrayFilePaths(targetPlatformOptions.IgnoredIncludeDirectories, ignoredIncludeDirectories);
 
-        var frameworks = VerifyImmutableArray(options.AppleFrameworks);
-        var frameworksPlatform = VerifyFrameworks(targetPlatformOptions.AppleFrameworks, frameworks);
-
         var outputFilePath = VerifyOutputFilePath(options.OutputDirectory, targetPlatformString);
 
         var clangDefines = VerifyImmutableArray(targetPlatformOptions?.Defines);
@@ -168,7 +165,6 @@ public sealed class ExtractInputSanitizer
                 MacroObjectDefines = clangDefines,
                 AdditionalArguments = clangArguments,
                 IsEnabledFindSystemHeaders = options.IsEnabledAutomaticallyFindSystemHeaders ?? true,
-                AppleFrameworks = frameworksPlatform,
                 IsEnabledSystemDeclarations = options.IsEnabledSystemDeclarations ?? false,
             }
         };
@@ -287,15 +283,6 @@ public sealed class ExtractInputSanitizer
         }
 
         return builder.ToImmutable();
-    }
-
-    private ImmutableArray<string> VerifyFrameworks(
-        ImmutableArray<string>? platformFrameworks,
-        ImmutableArray<string> frameworksNonPlatform)
-    {
-        var directoriesPlatform = VerifyImmutableArray(platformFrameworks);
-        var result = directoriesPlatform.AddRange(frameworksNonPlatform);
-        return result;
     }
 
     private static ImmutableArray<string> VerifyImmutableArray(ImmutableArray<string>? array)

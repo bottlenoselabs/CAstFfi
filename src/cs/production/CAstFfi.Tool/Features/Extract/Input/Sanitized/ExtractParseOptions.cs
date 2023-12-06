@@ -19,7 +19,5 @@ public sealed class ExtractParseOptions
 
     public bool IsEnabledFindSystemHeaders { get; init; }
 
-    public ImmutableArray<string> AppleFrameworks { get; init; }
-
     public bool IsEnabledSystemDeclarations { get; init; }
 }
