@@ -8,13 +8,13 @@ namespace CAstFfi.Features.Extract.Domain.Parse;
 public class ClangArgumentsBuilderResult
 {
     public readonly ImmutableArray<string> Arguments;
-    public readonly ImmutableDictionary<string, string> LinkedPaths;
+    public readonly ImmutableArray<string> SystemIncludeDirectories;
 
     public ClangArgumentsBuilderResult(
         ImmutableArray<string> arguments,
-        ImmutableDictionary<string, string> linkedPaths)
+        ImmutableArray<string> systemIncludeDirectories)
     {
         Arguments = arguments;
-        LinkedPaths = linkedPaths;
+        SystemIncludeDirectories = systemIncludeDirectories;
     }
 }

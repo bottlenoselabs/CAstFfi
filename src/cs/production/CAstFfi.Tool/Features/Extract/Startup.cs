@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the Git repository root directory for full license information.
 
 using CAstFfi.Features.Extract.Domain.Explore.Handlers;
+using CAstFfi.Features.Extract.Domain.Parse;
 using CAstFfi.Features.Extract.Input;
 using Microsoft.Extensions.DependencyInjection;
 using ClangArgumentsBuilder = CAstFfi.Features.Extract.Domain.Parse.ClangArgumentsBuilder;
@@ -19,6 +20,7 @@ public static class Startup
 
         services.AddSingleton<ClangInstaller>();
         services.AddSingleton<ClangArgumentsBuilder>();
+        services.AddSingleton<ClangSystemIncludeDirectoriesProvider>();
         services.AddSingleton<Parser>();
 
         services.AddSingleton<Explorer>();

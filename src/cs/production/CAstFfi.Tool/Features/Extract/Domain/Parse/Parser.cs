@@ -18,26 +18,20 @@ namespace CAstFfi.Features.Extract.Domain.Parse;
 public sealed partial class Parser
 {
     private readonly ILogger<Parser> _logger;
-    private readonly Features.Extract.Domain.Parse.ClangArgumentsBuilder _clangArgumentsBuilder;
+    private readonly ClangArgumentsBuilder _clangArgumentsBuilder;
 
     public Parser(
         ILogger<Parser> logger,
-        Features.Extract.Domain.Parse.ClangArgumentsBuilder clangArgumentsBuilder)
+        ClangArgumentsBuilder clangArgumentsBuilder)
     {
         _logger = logger;
         _clangArgumentsBuilder = clangArgumentsBuilder;
-    }
-
-    public void CleanUp()
-    {
-        _clangArgumentsBuilder.CleanUp();
     }
 
     public CXTranslationUnit TranslationUnit(
         string filePath,
         TargetPlatform targetPlatform,
         ExtractParseOptions options,
-        out ImmutableDictionary<string, string> linkedPaths,
         bool ignoreDiagnostics = false,
         bool keepGoing = false)
     {
@@ -47,7 +41,6 @@ public sealed partial class Parser
             false,
             false);
 
-        linkedPaths = argumentsBuilderResult.LinkedPaths;
         var arguments = argumentsBuilderResult.Arguments;
         var argumentsString = string.Join(" ", arguments);
 
@@ -102,9 +95,8 @@ public sealed partial class Parser
             options,
             false,
             true);
-        var linkedPaths = argumentsBuilderResult.LinkedPaths;
         var cursors = MacroObjectCursors(translationUnit, options);
-        var macroObjectCandidates = MacroObjectCandidates(options, cursors, linkedPaths);
+        var macroObjectCandidates = MacroObjectCandidates(options, cursors);
         return macroObjectCandidates;
     }
 
@@ -430,15 +422,12 @@ int main(void)
     }
 
     private ImmutableArray<MacroObjectCandidate> MacroObjectCandidates(
-        ExtractParseOptions options, ImmutableArray<CXCursor> cursors, ImmutableDictionary<string, string> linkedPaths)
+        ExtractParseOptions options, ImmutableArray<CXCursor> cursors)
     {
         var macroObjectsBuilder = ImmutableArray.CreateBuilder<MacroObjectCandidate>();
         foreach (var cursor in cursors)
         {
-            var macroObjectCandidate = MacroObjectCandidate(
-                cursor,
-                linkedPaths,
-                options.UserIncludeDirectories);
+            var macroObjectCandidate = MacroObjectCandidate(cursor, options.UserIncludeDirectories);
             if (macroObjectCandidate == null)
             {
                 continue;
@@ -452,11 +441,10 @@ int main(void)
 
     private MacroObjectCandidate? MacroObjectCandidate(
         CXCursor cursor,
-        ImmutableDictionary<string, string> linkedFileDirectoryPaths,
         ImmutableArray<string>? userIncludeDirectories)
     {
         var name = cursor.Name();
-        var location = cursor.GetLocation(null, linkedFileDirectoryPaths);
+        var location = cursor.GetLocation();
 
         // clang doesn't have a thing where we can easily get a value of a macro
         // we need to:

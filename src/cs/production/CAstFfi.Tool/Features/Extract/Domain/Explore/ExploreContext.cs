@@ -13,7 +13,6 @@ namespace CAstFfi.Features.Extract.Domain.Explore;
 public sealed class ExploreContext
 {
     private readonly ImmutableDictionary<CKind, ExploreHandler> _handlers;
-    private readonly ImmutableDictionary<string, string> _linkedPaths;
     private readonly Action<ExploreContext, CKind, ExploreInfoNode> _tryEnqueueVisitNode;
 
     public ExploreContext(
@@ -22,8 +21,7 @@ public sealed class ExploreContext
         CXTranslationUnit translationUnit,
         ExtractExploreOptions exploreExploreOptions,
         ExtractParseOptions parseOptions,
-        Action<ExploreContext, CKind, ExploreInfoNode> tryEnqueueVisitNode,
-        ImmutableDictionary<string, string> linkedPaths)
+        Action<ExploreContext, CKind, ExploreInfoNode> tryEnqueueVisitNode)
     {
         FilePath = GetFilePath(translationUnit);
         TargetPlatformRequested = targetPlatformRequested;
@@ -34,7 +32,6 @@ public sealed class ExploreContext
         ExploreOptions = exploreExploreOptions;
         ParseOptions = parseOptions;
         _tryEnqueueVisitNode = tryEnqueueVisitNode;
-        _linkedPaths = linkedPaths;
         _handlers = handlers;
     }
 
@@ -88,7 +85,7 @@ public sealed class ExploreContext
         CXCursor cursor,
         CXType type)
     {
-        return cursor.GetLocation(type, _linkedPaths, ParseOptions.UserIncludeDirectories);
+        return cursor.GetLocation(type, ParseOptions.UserIncludeDirectories);
     }
 
     public string CursorName(CXCursor cursor)

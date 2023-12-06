@@ -321,7 +321,6 @@ public static unsafe class ClangExtensions
     public static CLocation? GetLocation(
         this CXCursor cursor,
         CXType? type = null,
-        ImmutableDictionary<string, string>? linkedFileDirectoryPaths = null,
         ImmutableArray<string>? includeDirectories = null)
     {
         if (cursor.kind == CXCursorKind.CXCursor_TranslationUnit)
@@ -359,7 +358,7 @@ public static unsafe class ClangExtensions
 
         var locationSource = clang_getCursorLocation(cursor);
         var translationUnit = clang_Cursor_getTranslationUnit(cursor);
-        var location = GetLocation(locationSource, translationUnit, linkedFileDirectoryPaths, includeDirectories);
+        var location = GetLocation(locationSource, translationUnit, includeDirectories);
         return location;
     }
 
@@ -452,7 +451,6 @@ public static unsafe class ClangExtensions
     private static CLocation? GetLocation(
         CXSourceLocation locationSource,
         CXTranslationUnit? translationUnit = null,
-        ImmutableDictionary<string, string>? linkedFileDirectoryPaths = null,
         ImmutableArray<string>? includeDirectories = null)
     {
         CXFile file;
@@ -491,20 +489,7 @@ public static unsafe class ClangExtensions
             return location;
         }
 
-        if (linkedFileDirectoryPaths != null)
-        {
-            foreach (var (linkedDirectory, targetDirectory) in linkedFileDirectoryPaths)
-            {
-                if (location.FilePath.Contains(linkedDirectory, StringComparison.InvariantCulture))
-                {
-                    location.FilePath = location.FilePath
-                        .Replace(linkedDirectory, targetDirectory, StringComparison.InvariantCulture).Trim('/', '\\');
-                    break;
-                }
-            }
-        }
-
-        if (includeDirectories != null)
+        if (includeDirectories != null && !includeDirectories.Value.IsDefaultOrEmpty)
         {
             foreach (var includeDirectory in includeDirectories)
             {

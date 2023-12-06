@@ -59,17 +59,14 @@ public sealed partial class Explorer
     {
         CAbstractSyntaxTreeTargetPlatform result;
 
-        var translationUnit = _parser.TranslationUnit(
-            headerFilePath, targetPlatform, parseOptions, out var linkedPaths);
-
+        var translationUnit = _parser.TranslationUnit(headerFilePath, targetPlatform, parseOptions);
         var context = new ExploreContext(
             _handlers,
             targetPlatform,
             translationUnit,
             exploreOptions,
             parseOptions,
-            TryEnqueueVisitInfoNode,
-            linkedPaths);
+            TryEnqueueVisitInfoNode);
 
         var platformScope = _logger.BeginScope(targetPlatform)!;
 
@@ -118,7 +115,6 @@ public sealed partial class Explorer
     private void CleanUp(ExploreContext context)
     {
         clang_disposeTranslationUnit(context.TranslationUnit);
-        _parser.CleanUp();
 
         foreach (var handler in _handlers.Values)
         {
@@ -494,7 +490,6 @@ public sealed partial class Explorer
             filePath,
             context.TargetPlatformRequested,
             context.ParseOptions,
-            out _,
             true,
             true);
 
