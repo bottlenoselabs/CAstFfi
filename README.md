@@ -1,5 +1,7 @@
 # CAstFfi
 
+Archived - Please see https://github.com/bottlenoselabs/c2ffi/ instead.
+
 Convert a cross-platform C header `.h` to a FFI (foreign function interface) abstract syntax tree (AST) `.json` for the purposes of generating bindings to other languages.
 
 ## Background: Why?
